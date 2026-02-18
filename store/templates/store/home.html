@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <title>Infinix Store</title>
+</head>
+<body>
+    <h1>Welcome to Infinix Store</h1>
+    {%for product in products %}
+        <div>
+            <h2>{{ product.name }}</h2>
+            <p>Price: ${{ product.price }}</p>
+            <p>{{ product.description }}</p>
+        </div>
+    {% endfor %}
+</body>
+</html>
