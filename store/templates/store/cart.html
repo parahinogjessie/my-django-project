@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+</head>
+<body>
+    <ul>
+        <li><a href="{% url 'home' %}">Home</a></li>
+        <li><a href="{% url 'cart' %}">View Cart</a></li>
+        <li>Log-in</li>
+    </ul>
+
+    <h1>Your Cart</h1>
+    <hr>
+    {% for product in products%}
+    <div>
+        <img src="{{ product.image.url }}" alt="{{ product.name }}" width="100">
+        <h2>{{ product.name }}</h2>
+        <p>
+            Price: ${{ product.discount_price }}
+        </p>
+
+        <a href="{% url 'remove_from_cart' product.id %}"
+            onclick="return confirm('Are you sure you want to remove this item from the cart?');">
+            <button>Remove</button>
+        </a>
+    </div>
+    <hr>
+
+    {% empty %}
+
+    <p>Your cart is empty.</p>
+
+    {% endfor %}
+</body>
+</html>

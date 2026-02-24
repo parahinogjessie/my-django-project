@@ -1,16 +1,38 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-   <title>Infinix Store</title>
+   <title>Laptops</title>
 </head>
 <body>
-    <h1>Welcome to Infinix Store</h1>
-    {%for product in products %}
-        <div>
-            <h2>{{ product.name }}</h2>
-            <p>Price: ${{ product.price }}</p>
-            <p>{{ product.description }}</p>
-        </div>
+
+    <ul>
+        <li><a href="{% url 'home' %}">Home</a></li>
+        <li><a href="{% url 'cart' %}">View Cart</a></li>
+        <li>Log-in</li>
+    </ul>
+    <h1>Affordable Gaming Laptops</h1>
+    
+    {% for product in products %}
+
+    <div style="border: 1px solid #ccc; padding: 10px; margin: 10px; width: 300px;">
+        {% if product.image %}
+            <img src="{{ product.image.url }}" width="200">
+        {% endif %}
+        
+        <h2>{{ product.name }}</h2>
+        <p>{{ product.description }}</p>
+
+        <p>
+            Original Price: <s>${{ product.original_price }}</s><br>
+            <b>Sale Price: ${{ product.discount_price }}</b>
+        </p>
+
+        <a href="{% url 'add_to_cart' product.id %}">
+            <button>Add to Cart</button>
+        </a>
+    </div>
+
+
     {% endfor %}
 </body>
 </html>
