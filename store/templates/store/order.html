@@ -1,0 +1,25 @@
+{% extends 'store/base.html' %}
+
+{% block title %}My store{% endblock %}
+
+{% block content%}
+
+<h2>Order {{ product.name }}</h2>
+
+<img src="{{ product.image.url }}" width="200">
+
+    <p>Price: ${{ product.discount_price }}</p>
+
+<form method="POST">
+    {% csrf_token %}
+
+    <label>Quantity:</label>
+    <input type="number" name="quantity" value="1" min="1">
+
+    <br><br>
+        <button type="submit">Confirm Order</button>
+    </form>
+    
+</form>
+
+{% endblock %}

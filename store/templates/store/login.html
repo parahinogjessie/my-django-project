@@ -1,13 +1,25 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-   
-</head>
-<body>
-    <ul>
-        <li><a href="{% url 'home' %}">Home</a></li>
-        <li><a href="{% url 'cart' %}">View Cart</a></li>
-        <li><a href="{% url 'login'%}">Log-in</a></li>
-    </ul>
-</body>
-</html>
+{% extends "store/base.html" %}
+
+{% block title %}Login{% endblock %}
+
+{% block content %}
+<h1>Login</h1>
+
+<form method="post">
+    {% csrf_token %}
+    <input type="text" name="username" placeholder="Username" required {% if cooldown %}disabled{% endif %}>
+    <input type="password" name="password" placeholder="Password" required {% if cooldown %}disabled{% endif %}>
+    <button type="submit" {% if cooldown %}disabled{% endif %}>Login</button>
+</form>
+
+{% if cooldown %}
+    <p style="color:orange;">Please wait {{ cooldown }} seconds before trying again.</p>
+{% endif %}
+
+<p>Don't have an account? 
+    <a href="{% url 'register' %}" 
+       style="padding:5px 10px; background-color:#000000; color:white; border:none; border-radius:3px; text-decoration:none;">
+        Register
+    </a>
+</p>
+{% endblock %}

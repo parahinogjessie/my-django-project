@@ -1,0 +1,26 @@
+{% extends "store/base.html" %}
+
+{% block title %}Register{% endblock %}
+
+{% block content %}
+<h1>Register</h1>
+
+<form method="post">
+    {% csrf_token %}
+    <input type="text" name="username" placeholder="Username (min 15 chars)" required {% if cooldown %}disabled{% endif %}>
+    <input type="password" name="password" placeholder="Password (min 8 chars, 1 uppercase, 1 number)" required {% if cooldown %}disabled{% endif %}>
+    <input type="password" name="confirm_password" placeholder="Confirm Password" required {% if cooldown %}disabled{% endif %}>
+    <button type="submit" {% if cooldown %}disabled{% endif %}>Register</button>
+</form>
+
+{% if cooldown %}
+    <p style="color:orange;">You have reached the daily registration limit. Try again tomorrow.</p>
+{% endif %}
+
+<p>Already have an account?
+    <a href="{% url 'login' %}" 
+        style="padding:5px 10px; background-color:#000000; color:white; border:none; border-radius:3px; text-decoration:none;">
+        Login
+    </a>
+</p>
+{% endblock %}

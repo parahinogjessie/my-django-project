@@ -1,38 +1,43 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-   <title>Laptops</title>
-</head>
-<body>
+{% extends 'store/base.html' %}
 
-    <ul>
-        <li><a href="{% url 'home' %}">Home</a></li>
-        <li><a href="{% url 'cart' %}">View Cart</a></li>
-        <li>Log-in</li>
-    </ul>
-    <h1>Affordable Gaming Laptops</h1>
-    
+{% block title %}My Store{% endblock %}
+
+{% block content %}
+<h1>Affordable Gaming Laptops</h1>
+
+<div class="product-grid">
     {% for product in products %}
-
-    <div style="border: 1px solid #ccc; padding: 10px; margin: 10px; width: 300px;">
+    <div class="product-card">
         {% if product.image %}
-            <img src="{{ product.image.url }}" width="200">
+            <img src="{{ product.image.url }}" alt="{{ product.name }}">
         {% endif %}
-        
-        <h2>{{ product.name }}</h2>
-        <p>{{ product.description }}</p>
 
-        <p>
-            Original Price: <s>${{ product.original_price }}</s><br>
-            <b>Sale Price: ${{ product.discount_price }}</b>
-        </p>
+        <h3>{{ product.name }}</h3>
+        <p>{{ product.description|truncatewords:20 }}</p>
 
-        <a href="{% url 'add_to_cart' product.id %}">
-            <button>Add to Cart</button>
-        </a>
+        <div class="price">
+            <span class="original-price">${{ product.original_price }}</span><br>
+            <span class="discount-price">${{ product.discount_price }}</span>
+        </div>
+
+        {% if user.is_authenticated %}
+            <a href="{% url 'add_to_cart' product.id %}">
+                <button>Add to Cart</button>
+            </a>
+
+            <a href="{% url 'order' product.id %}">
+                <button>Buy Now</button>
+            </a>
+        {% else %}
+            <a href="{% url 'login' %}">
+                <button>Add to Cart</button>
+            </a>
+
+            <a href="{% url 'login' %}">
+                <button>Buy Now</button>
+            </a>
+        {% endif %}
     </div>
-
-
     {% endfor %}
-</body>
-</html>
+</div>
+{% endblock %}

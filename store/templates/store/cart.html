@@ -1,36 +1,63 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    
-</head>
-<body>
-    <ul>
-        <li><a href="{% url 'home' %}">Home</a></li>
-        <li><a href="{% url 'cart' %}">View Cart</a></li>
-        <li>Log-in</li>
-    </ul>
+{% extends 'store/base.html' %}
 
-    <h1>Your Cart</h1>
-    <hr>
-    {% for product in products%}
-    <div>
-        <img src="{{ product.image.url }}" alt="{{ product.name }}" width="100">
-        <h2>{{ product.name }}</h2>
-        <p>
-            Price: ${{ product.discount_price }}
-        </p>
+{% block title %}My Store{% endblock %}
 
-        <a href="{% url 'remove_from_cart' product.id %}"
-            onclick="return confirm('Are you sure you want to remove this item from the cart?');">
-            <button>Remove</button>
-        </a>
-    </div>
-    <hr>
+{% block content %}
+<h1>Your Shopping Cart</h1>
 
-    {% empty %}
+{% if cart_items %}
+<form action="{% url 'checkout' %}" method="POST">
+    {% csrf_token %}
+    <table>
+        <thead>
+            <tr>
+                <th>Select</th>
+                <th>Product</th>
+                <th>Image</th>
+                <th>Price</th>
+                <th>Quantity</th>
+                <th>Subtotal</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in cart_items %}
+            <tr>
+                <td>
+                    <input type="checkbox" name="cart_item_ids" value="{{ item.id }}">
+                </td>
+                <td>{{ item.product.name }}</td>
+                <td>
+                    {% if item.product.image %}
+                        <img src="{{ item.product.image.url }}" width="80">
+                    {% else %}
+                        No Image
+                    {% endif %}
+                </td>
+                <td>${{ item.product.discount_price }}</td>
+                <td>{{ item.quantity }}</td>
+                <td>${{ item.subtotal }}</td>
+                <td>
+                    <a href="{% url 'remove_from_cart' item.product.id %}" 
+                       onclick="return confirm('Remove {{ item.product.name }} from your cart?');">
+                        <button type="button" style="background-color:#e53935; color:white; padding:5px 10px; border:none; border-radius:4px; cursor:pointer;">
+                            Remove
+                        </button>
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 
-    <p>Your cart is empty.</p>
+    <button type="submit" 
+            style="background-color:#4CAF50; color:white; padding:10px 20px; border:none; border-radius:5px; cursor:pointer; font-size:16px; margin-top:10px;">
+        Checkout Selected Items
+    </button>
+</form>
 
-    {% endfor %}
-</body>
-</html>
+{% else %}
+<p>Your cart is empty.</p>
+{% endif %}
+
+{% endblock %}

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{% block title %}My Store{% endblock %}</title>
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'store/css/style.css' %}">
+</head>
+<body>
+    <nav>
+        <ul>
+            <li><a href="{% url 'home' %}">Home</a></li>
+            <li><a href="{% url 'cart' %}">Cart</a></li>
+            <li><a href="{% url 'order_history' %}">Orders</a></li>
+
+            {% if user.is_authenticated %}
+                <li>Hello, {{ user.username }}</li>
+                <li>
+                    <form action="{% url 'logout' %}" method="post" style="display:inline;">
+                        {% csrf_token %}
+                        <button type="submit">Logout</button>
+                    </form>
+                </li>
+            {% else %}
+                <li><a href="{% url 'login' %}">Login</a></li>
+            {% endif %}
+        </ul>
+    </nav>
+
+    {% if messages %}
+        <ul id="message">
+            {% for message in messages %}
+                <li style="color:red;">{{ message }}</li>
+            {% endfor %}
+        </ul>
+
+        <script>
+            setTimeout(function() {
+                var msg = document.getElementById('message');
+                if(msg){ msg.style.display = 'none'; }
+            }, 3000);
+        </script>
+    {% endif %}
+    {% block content %}{% endblock %}
+</body>
+</html>

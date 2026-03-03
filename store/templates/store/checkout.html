@@ -1,0 +1,22 @@
+{% extends 'store/base.html' %}
+
+{% block content %}
+
+<h2>Checkout</h2>
+
+{% for item in cart_items %}
+<p>
+{{ item.product.name }} |
+Price: ${{ item.product.discount_price }} |
+Qty: {{ item.quantity }}
+</p>
+{% endfor %}
+
+<h3>Total: ${{ total }}</h3>
+
+<form method="POST">
+{% csrf_token %}
+<button type="submit">Confirm Order</button>
+</form>
+
+{% endblock %}
