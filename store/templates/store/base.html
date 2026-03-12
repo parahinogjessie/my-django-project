@@ -1,15 +1,15 @@
 <!DOCTYPE html>
 <html>
 <head>
+        {% load static %}
     <title>{% block title %}My Store{% endblock %}</title>
-    {% load static %}
-    <link rel="stylesheet" type="text/css" href="{% static 'store/css/style.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
 </head>
 <body>
-    <nav>
-        <ul>
+    <nav class="navbar">
+        <ul class="nav-links">
             <li><a href="{% url 'home' %}">Home</a></li>
-            <li><a href="{% url 'cart' %}">Cart</a></li>
+            <li><a href="{% url 'cart' %}">View Cart</a></li>
             <li><a href="{% url 'order_history' %}">Orders</a></li>
 
             {% if user.is_authenticated %}
