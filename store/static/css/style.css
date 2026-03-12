@@ -52,17 +52,17 @@ body {
 }
 
 .hero {
-    display: flex; /* horizontal layout */
+    display: flex;
     align-items: center;
     justify-content: space-between;
-    max-width: 1200px; /* same as nav max-width for consistency */
+    max-width: 1200px;
     margin: 0 auto;
-    padding: 80px 20px; /* space from top and sides */
-    gap: 40px; /* space between text and image */
+    padding: 80px 20px; 
+    gap: 40px;
 }
 
 .hero-content {
-    flex: 1; /* take left space */
+    flex: 1;
 }
 
 .hero-content h1 {
@@ -91,11 +91,11 @@ body {
 }
 
 .view-btn:hover {
-    background-color: #1a73e8; /* slightly darker blue */
+    background-color: #1a73e8;
 }
 
 .hero-image {
-    flex: 1; /* take right space */
+    flex: 1;
     text-align: center;
 }
 
@@ -105,15 +105,14 @@ body {
 }
 
 .selection-title {
-    max-width: 1200px;  /* same as navbar & hero */
+    max-width: 1200px;
     margin: 0 auto 30px auto;
-    padding: 0 20px;    /* align with navbar/hero */
+    padding: 0 20px;  
     font-size: 2rem;
     font-weight: 700;
     color: var(--black);
 }
 
-/* Section title */
 .selection-title {
     max-width: 1200px;
     margin: 0 auto 30px auto;
@@ -123,7 +122,6 @@ body {
     color: var(--black);
 }
 
-/* Product grid layout */
 .product-grid { 
     display: grid; 
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); 
@@ -133,7 +131,6 @@ body {
     margin: 0 auto; 
 }
 
-/* Product card */
 .product-card { 
     background: #fff; 
     border-radius: 28px; 
@@ -142,9 +139,9 @@ body {
     overflow: hidden; 
     transition: 0.4s; 
     display: flex;
-    flex-direction: column;      /* stack elements vertically */
-    justify-content: space-between; /* makes cards same height */
-    min-height: 480px;           /* fixed minimum height for uniformity */
+    flex-direction: column;     
+    justify-content: space-between;
+    min-height: 480px;           
 }
 
 .product-card:hover { 
@@ -152,7 +149,6 @@ body {
     box-shadow: 0 15px 35px rgba(0,0,0,0.08); 
 }
 
-/* Section title */
 .selection-title {
     max-width: 1200px;
     margin: 0 auto 30px auto;
@@ -162,7 +158,6 @@ body {
     color: var(--black);
 }
 
-/* Product grid layout */
 .product-grid { 
     display: grid; 
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); 
@@ -172,7 +167,6 @@ body {
     margin: 0 auto; 
 }
 
-/* Product card */
 .product-card { 
     background: #fff; 
     border-radius: 28px; 
@@ -181,9 +175,9 @@ body {
     overflow: hidden; 
     transition: 0.4s; 
     display: flex;
-    flex-direction: column;      /* stack content vertically */
-    justify-content: space-between; /* buttons stick to bottom */
-    min-height: 500px;           /* all cards same height */
+    flex-direction: column;     
+    justify-content: space-between;
+    min-height: 500px;           
 }
 
 .product-card:hover { 
@@ -191,7 +185,6 @@ body {
     box-shadow: 0 15px 35px rgba(0,0,0,0.08); 
 }
 
-/* Product grid */
 .product-grid { 
     display: grid; 
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); 
@@ -201,7 +194,6 @@ body {
     margin: 0 auto; 
 }
 
-/* Product card */
 .product-card { 
     background: #fff; 
     border-radius: 28px; 
@@ -211,9 +203,9 @@ body {
     overflow: hidden; 
     transition: 0.4s; 
     display: flex;
-    flex-direction: column;      /* stack content vertically */
-    justify-content: space-between; /* keep buttons at bottom */
-    min-height: 480px;           /* uniform card height */
+    flex-direction: column;      
+    justify-content: space-between;
+    min-height: 480px;         
 }
 
 .product-card:hover { 
@@ -221,10 +213,9 @@ body {
     box-shadow: 0 15px 35px rgba(0,0,0,0.08); 
 }
 
-/* Description */
 .description { 
     text-align: justify; 
-    flex-grow: 1; /* fills space so buttons stay at bottom */
+    flex-grow: 1; 
 }
 
 .product-grid { 
@@ -240,10 +231,8 @@ body {
 
 .description { text-align: justify; }
 
-/* Image Container & Zoom Button */
 .product-image-container {
     position: relative;
-    /* Removed the gray background and padding here */
     text-align: center;
     margin-bottom: 10px;
 }
@@ -252,16 +241,15 @@ body {
     display: block; 
     margin: 0 auto; 
     width: 100%;
-    max-width: 280px; /* Increased from 260px to make it bigger */
-    height: 220px;    /* Increased from 200px */
-    object-fit: cover; /* Forces the image to fill its bounding box */
+    max-width: 280px;
+    height: 220px;    
+    object-fit: cover; 
     object-position: center;
-    border-radius: 16px; /* Applies the rounded corners directly to the image */
-    overflow: hidden; /* Clips the sharp edges */
-    box-shadow: 0 4px 12px rgba(0,0,0,0.06); /* Adds a very soft shadow to make it pop */
+    border-radius: 16px; 
+    overflow: hidden; 
+    box-shadow: 0 4px 12px rgba(0,0,0,0.06); 
 }
 
-/* Product title and description */
 .product-card h3 {
     font-size: 1.25rem;
     margin: 10px 0 8px;
@@ -274,10 +262,9 @@ body {
     color: #555;
     line-height: 1.4;
     text-align: justify;
-    flex-grow: 1; /* makes description fill space so buttons stay at bottom */
+    flex-grow: 1;
 }
 
-/* Price styling */
 .price {
     margin: 10px 0;
     font-weight: 600;
@@ -294,7 +281,6 @@ body {
     font-size: 1.1rem;
 }
 
-/* Buttons container */
 .buttons {
     display: flex;
     gap: 15px;
@@ -319,7 +305,6 @@ body {
     background-color: #1a73e8;
 }
 
-/* Responsive tweaks */
 @media (max-width: 900px) {
     .product-card { min-height: unset; }
     .product-grid { grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
