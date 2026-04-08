@@ -1,6 +1,7 @@
 {% extends 'store/base.html' %}
 
 {% block content %}
+{% load humanize %}
 
 <h2>My Orders</h2>
 
@@ -20,11 +21,13 @@
         <td>{{ order.product.name }}</td>
         <td><img src="{{ order.product.image.url }}" width="100" height="100"></td>
         <td>{{ order.quantity }}</td>
-        <td>${{ order.total_price }}</td>
+        <td>₱{{ order.total_price|intcomma }}</td>
         <td>{{ order.created_at }}</td>
-        <td><a href="{% url 'delete_order' order.id %}">
-            <button>Delete</button>
-        </a></td>
+        <td><form method="POST" action="{% url 'cancel_order' order.id %}"
+            onsubmit="return confirm('Are you sure you want to cancel this order?')">
+            {% csrf_token %}
+            <button type="submit">Cancel</button>
+        </form></td>
     </tr>
     {% endfor %}
 </table>

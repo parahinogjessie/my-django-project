@@ -11,6 +11,7 @@
             <li><a href="{% url 'home' %}">Home</a></li>
             <li><a href="{% url 'cart' %}">View Cart</a></li>
             <li><a href="{% url 'order_history' %}">Orders</a></li>
+            <li><a href="{% url 'contact_info' %}">Contact Info</a></li>
 
             {% if user.is_authenticated %}
                 <li>Hello, {{ user.username }}</li>

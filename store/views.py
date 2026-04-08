@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Product, Cart, CartItem, Order
+from .models import Product, Cart, CartItem, Order, Profile
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm 
 from django.contrib.auth import login, logout, authenticate
@@ -8,6 +8,7 @@ from django.contrib.auth.models import User
 from django.utils import timezone
 from datetime import timedelta
 from django.contrib import messages
+from django.db import transaction
 
 def home(request):
     products = Product.objects.all()
@@ -32,12 +33,28 @@ def cart(request):
     cart, _ = Cart.objects.get_or_create(user=request.user)
     cart_items = CartItem.objects.filter(cart=cart)
 
+    # compute subtotal
     for item in cart_items:
-        item.subtotal = item.product.discount_price * item.quantity
+        item.subtotal = (item.product.discount_price or item.quantity) * item.quantity
 
-    total = sum(item.product.discount_price * item.quantity for item in cart_items)
+    total = sum(item.subtotal for item in cart_items)
 
-    return render(request, 'store/cart.html', {'cart_items': cart_items, 'total': total})
+    # 🔥 ADD THIS PART
+    if request.method == "POST":
+        selected_ids = request.POST.getlist("cart_item_ids")
+
+        if not selected_ids:
+            return redirect('cart')  # nothing selected
+
+        # SAVE selected items to session
+        request.session["selected_cart_items"] = selected_ids
+
+        return redirect('checkout')
+
+    return render(request, 'store/cart.html', {
+        'cart_items': cart_items,
+        'total': total
+    })
 
 @login_required(login_url='login')
 def remove_from_cart(request, product_id):
@@ -49,55 +66,58 @@ def remove_from_cart(request, product_id):
     cart_item.delete()
     return redirect('cart')
 
-@login_required(login_url ='login')
-def order(request, product_id):
-    product = get_object_or_404(Product, id=product_id)
-
-    if request.method == "POST":
-        quantity = int(request.POST.get("quantity", 1))
-        total_price = product.discount_price * quantity
-
-        Order.objects.create(
-            user=request.user,
-            product=product,
-            quantity=quantity,
-            total_price=total_price,
-        )
-
-        return redirect('order_history')
-    return render(request, 'store/order.html', {'product': product})
-
 @login_required(login_url='login')
 def checkout(request):
-    cart_items = CartItem.objects.filter(cart__user=request.user)
-
-    total = 0
-    for item in cart_items:
-        item.subtotal = item.product.discount_price * item.quantity
-        total += item.subtotal
-
     if request.method == "POST":
-        selected_ids = request.POST.getlist("cart_item_ids")
+        # get selected cart items
+        selected_ids = request.POST.getlist('cart_item_ids')
         if not selected_ids:
-            # No items selected
+            messages.error(request, "Please select at least one item to checkout.")
             return redirect('cart')
 
-        for item_id in selected_ids:
-            item = CartItem.objects.get(id=item_id, cart__user=request.user)
-            Order.objects.create(
-                user=request.user,
-                product=item.product,
-                quantity=item.quantity,
-                total_price=item.product.discount_price * item.quantity
-            )
-            item.delete()  # remove from cart after ordering
+        cart_items = CartItem.objects.filter(id__in=selected_ids, cart__user=request.user)
 
-        return redirect('order_history')
+        total = 0
+        for item in cart_items:
+            price = item.product.discount_price if item.product.discount_price else item.product.original_price
+            item.subtotal = price * item.quantity
+            total += item.subtotal
 
-    return render(request, 'store/checkout.html', {
-        'cart_items': cart_items,
-        'total': total
-    })
+        profile = getattr(request.user, 'profile', None)
+
+        if 'place_order' in request.POST:
+            full_name = request.POST.get('full_name')
+            mobile = request.POST.get('mobile')
+            address = request.POST.get('address')
+
+            # update profile info
+            if profile:
+                profile.full_name = full_name
+                profile.mobile = mobile
+                profile.address = address
+                profile.save()
+
+            # create orders
+            for item in cart_items:
+                price = item.product.discount_price if item.product.discount_price else item.product.original_price
+                Order.objects.create(
+                    user=request.user,
+                    product=item.product,
+                    quantity=item.quantity,
+                    total_price=price * item.quantity
+                )
+                item.delete()
+
+            return redirect('order_history')
+
+        return render(request, 'store/checkout.html', {
+            'cart_items': cart_items,
+            'total': total,
+            'profile': profile
+        })
+
+    return redirect('cart')  # if no POST, go back to cart
+
 
 @login_required(login_url='login')
 def order_history(request):
@@ -109,7 +129,7 @@ def order_history(request):
     })
 
 @login_required(login_url='login')
-def delete_order(request, order_id):
+def cancel_order(request, order_id):
     order = get_object_or_404(Order, id=order_id, user=request.user)
     order.delete()
     return redirect('order_history')
@@ -211,3 +231,32 @@ def register(request):
 def user_logout(request):
     logout(request)
     return redirect('home')
+
+@login_required(login_url='login')
+def contact_info(request):
+    try:
+        profile = Profile.objects.get(user=request.user)
+    except Profile.DoesNotExist:
+        profile = None  # profile doesn’t exist yet
+
+    if request.method == "POST":
+        full_name = request.POST.get('full_name')
+        mobile = request.POST.get('mobile')
+        address = request.POST.get('address')
+
+        if profile:
+            profile.full_name = full_name
+            profile.mobile = mobile
+            profile.address = address
+            profile.save()
+        else:
+            Profile.objects.create(
+                user=request.user,
+                full_name=full_name,
+                mobile=mobile,
+                address=address
+            )
+
+        return redirect('checkout')  # or redirect wherever you want
+
+    return render(request, 'store/contact_info.html', {'profile': profile})

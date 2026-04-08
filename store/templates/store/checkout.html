@@ -1,22 +1,93 @@
 {% extends 'store/base.html' %}
+{% load humanize %}
+
+{% block title %}Checkout{% endblock %}
 
 {% block content %}
+<div style="max-width:600px; margin:40px auto; padding:25px; background:#fff; border-radius:20px; box-shadow:0 6px 20px rgba(0,0,0,0.1); font-family:Arial;">
 
-<h2>Checkout</h2>
+    <h2 style="text-align:center; margin-bottom:20px;">Checkout</h2>
 
-{% for item in cart_items %}
-<p>
-{{ item.product.name }} |
-Price: ${{ item.product.discount_price }} |
-Qty: {{ item.quantity }}
-</p>
-{% endfor %}
+    <!-- USER INFO (EDITABLE) -->
+    <form method="POST">
+        {% csrf_token %}
 
-<h3>Total: ${{ total }}</h3>
+        {% for item in cart_items %}
+            <input type="hidden" name="cart_item_ids" value="{{ item.id }}">
+        {% endfor %}    
 
-<form method="POST">
-{% csrf_token %}
-<button type="submit">Confirm Order</button>
-</form>
+        <div style="margin-bottom:25px; padding:20px; background:#f9f9f9; border-radius:15px;">
+            <h3>Your Information</h3>
 
+            <input type="text" name="full_name" placeholder="Full Name"
+                   value="{{ profile.full_name|default_if_none:'' }}"
+                   style="width:100%; padding:10px; margin-top:10px; border-radius:8px; border:1px solid #ccc;" required>
+
+            <input type="text" name="mobile" placeholder="Mobile Number"
+                   value="{{ profile.mobile|default_if_none:'' }}"
+                   style="width:100%; padding:10px; margin-top:10px; border-radius:8px; border:1px solid #ccc;" required>
+
+            <textarea name="address" placeholder="Address"
+                      style="width:100%; padding:10px; margin-top:10px; border-radius:8px; border:1px solid #ccc;" required>{{ profile.address|default_if_none:'' }}</textarea>
+        </div>
+
+        <!-- ORDER SUMMARY -->
+        <div style="margin-bottom:25px; padding:20px; background:#fdfdfd; border-radius:15px;">
+            <h3>Order Summary</h3>
+
+            {% for item in cart_items %}
+            <div style="display:flex; margin-bottom:15px; border-bottom:1px solid #eee; padding-bottom:10px; align-items:center; gap:15px;">
+
+                <!-- PRODUCT IMAGE -->
+                <div style="flex-shrink:0;">
+                    {% if item.product.image %}
+                        <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" width="80" style="border-radius:8px;">
+                    {% else %}
+                        <div style="width:80px; height:80px; background:#eee; display:flex; align-items:center; justify-content:center; border-radius:8px; color:#888;">No Image</div>
+                    {% endif %}
+                </div>
+
+                <!-- PRODUCT INFO -->
+                <div style="flex:1;">
+                    <p style="margin:0; font-weight:600;">{{ item.product.name }}</p>
+                    <p style="margin:3px 0; font-size:0.9rem; color:#555;">Quantity: {{ item.quantity }}</p>
+
+                    {% if item.product.discount_price < item.product.original_price %}
+                        <p style="margin:0; font-size:0.9rem; color:#888; text-decoration:line-through;">
+                            ₱{{ item.product.original_price|intcomma }}
+                        </p>
+                        <p style="margin:0; font-size:0.95rem; font-weight:700; color:#FE2C55;">
+                            ₱{{ item.product.discount_price|intcomma }}
+                        </p>
+                    {% else %}
+                        <p style="margin:0; font-size:0.95rem; font-weight:700; color:#333;">
+                            ₱{{ item.product.original_price|intcomma }}
+                        </p>
+                    {% endif %}
+
+                    <!-- Subtotal -->
+                    <p style="margin:0; font-size:0.9rem; font-weight:700; color:#333;">
+                        Subtotal: ₱{{ item.subtotal|intcomma }}
+                    </p>
+                </div>
+
+            </div>
+            {% endfor %}
+
+            <!-- TOTAL -->
+            <div style="display:flex; justify-content:space-between; font-size:1.2rem; font-weight:700; margin-top:15px;">
+                <span>Total:</span>
+                <span style="color:#FE2C55;">₱{{ total|intcomma }}</span>
+            </div>
+        </div>
+
+        <!-- CONFIRM BUTTON -->
+        <button type="submit" name="place_order"
+                style="width:100%; padding:15px; background:#FE2C55; color:white; border:none; border-radius:12px; font-weight:700; cursor:pointer;">
+            Place Order
+        </button>
+
+    </form>
+
+</div>
 {% endblock %}

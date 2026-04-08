@@ -1,14 +1,16 @@
 {% extends 'store/base.html' %}
+{% load humanize %}
 
 {% block title %}My Store{% endblock %}
 
 {% block content %}
+
 <h1>Your Shopping Cart</h1>
 
 {% if cart_items %}
 <form action="{% url 'checkout' %}" method="POST">
     {% csrf_token %}
-    <table>
+    <table style="width:100%; border-collapse: collapse;">
         <thead>
             <tr>
                 <th>Select</th>
@@ -22,8 +24,9 @@
         </thead>
         <tbody>
             {% for item in cart_items %}
-            <tr>
-                <td>
+            <tr style="border-bottom:1px solid #eee;">
+                <td style="text-align:center;">
+                    <!-- Checkbox for user to select which items to checkout -->
                     <input type="checkbox" name="cart_item_ids" value="{{ item.id }}">
                 </td>
                 <td>{{ item.product.name }}</td>
@@ -34,15 +37,12 @@
                         No Image
                     {% endif %}
                 </td>
-                <td>${{ item.product.discount_price }}</td>
+                <td>₱{{ item.product.discount_price|intcomma }}</td>
                 <td>{{ item.quantity }}</td>
-                <td>${{ item.subtotal }}</td>
+                <td>₱{{ item.subtotal|intcomma }}</td>
                 <td>
-                    <a href="{% url 'remove_from_cart' item.product.id %}" 
-                       onclick="return confirm('Remove {{ item.product.name }} from your cart?');">
-                        <button type="button" style="background-color:#e53935; color:white; padding:5px 10px; border:none; border-radius:4px; cursor:pointer;">
-                            Remove
-                        </button>
+                    <a href="{% url 'remove_from_cart' item.product.id %}" onclick="return confirm('Remove {{ item.product.name }} from cart?');">
+                        <button type="button" style="background-color:#e53935; color:white; padding:5px 10px; border:none; border-radius:4px; cursor:pointer;">Remove</button>
                     </a>
                 </td>
             </tr>
@@ -50,10 +50,11 @@
         </tbody>
     </table>
 
-    <button type="submit" 
-            style="background-color:#4CAF50; color:white; padding:10px 20px; border:none; border-radius:5px; cursor:pointer; font-size:16px; margin-top:10px;">
-        Checkout Selected Items
-    </button>
+    <div style="text-align:center; margin-top:20px;">
+        <button type="submit" style="background-color:#FE2C55; color:white; padding:12px 25px; border:none; border-radius:10px; font-weight:700; font-size:16px; cursor:pointer;">
+            Checkout Selected Items
+        </button>
+    </div>
 </form>
 
 {% else %}
