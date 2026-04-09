@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+        {% load static %}
+    <title>{% block title %}My Store{% endblock %}</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+    <nav class="navbar">
+        <ul class="nav-links">
+            <li><a href="{% url 'home' %}">Home</a></li>
+            <li><a href="{% url 'cart' %}">View Cart</a></li>
+            <li><a href="{% url 'order_history' %}">Orders</a></li>
+            <li><a href="{% url 'contact_info' %}">Contact</a></li>
+
+            {% if user.is_authenticated %}
+                <li>Hello, {{ user.username }}</li>
+                <li>
+                    <form action="{% url 'logout' %}" method="post" style="display:inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn-logout">Logout</button>
+                    </form>
+                </li>
+            {% else %}
+                <li><a href="{% url 'login' %}">Login</a></li>
+            {% endif %}
+        </ul>
+    </nav>
+
+    {% if messages %}
+        <ul id="message">
+            {% for message in messages %}
+                <li style="color:red;">{{ message }}</li>
+            {% endfor %}
+        </ul>
+
+        <script>
+            setTimeout(function() {
+                var msg = document.getElementById('message');
+                if(msg){ msg.style.display = 'none'; }
+            }, 3000);
+        </script>
+
+    {% endif %}
+    {% block content %}{% endblock %}
+</body>
+</html>

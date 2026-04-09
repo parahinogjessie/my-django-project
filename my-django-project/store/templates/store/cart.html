@@ -1,0 +1,70 @@
+{% extends 'store/base.html' %}
+{% load humanize %}
+
+{% block title %}My Store{% endblock %}
+
+{% block content %}
+
+<div class="container">
+    <div class="cart-card">
+        <h1>Your Shopping Cart</h1>
+<hr style="border: 0; border-top: 2px solid #eee; margin-bottom: 20px;">
+        {% if cart_items %}
+        <form action="{% url 'checkout' %}" method="POST">
+            {% csrf_token %}
+            <table class="cart-table">
+                <thead>
+                    <tr>
+                        <th style="text-align:center;">Select</th>
+                        <th>Product</th>
+                        <th>Image</th>
+                        <th>Price</th>
+                        <th>Quantity</th>
+                        <th>Subtotal</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in cart_items %}
+                    <tr>
+                        <td style="text-align:center;">
+                            <input type="checkbox" name="cart_item_ids" value="{{ item.id }}">
+                        </td>
+                        <td>**{{ item.product.name }}**</td>
+                        <td>
+                            {% if item.product.image %}
+                                <img src="{{ item.product.image.url }}" width="80" style="border-radius: 4px; border: 1px solid #ddd;">
+                            {% else %}
+                                <span style="color: #999;">No Image</span>
+                            {% endif %}
+                        </td>
+                        <td>₱{{ item.product.discount_price|intcomma }}</td>
+                        <td>{{ item.quantity }}</td>
+                        <td>₱{{ item.subtotal|intcomma }}</td>
+                        <td>
+                            <a href="{% url 'remove_from_cart' item.product.id %}" onclick="return confirm('Remove {{ item.product.name }} from cart?');">
+                                <button type="button" class="btn-remove">Remove</button>
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <div style="text-align:center; margin-top:30px;">
+                <button type="submit" class="btn-checkout">
+                    Checkout Selected Items
+                </button>
+            </div>
+        </form>
+
+        {% else %}
+        <div style="text-align: center; padding: 40px;">
+            <p style="color: #666; font-size: 18px; margin-bottom: 30px; font-weight: bolder;">Your cart is empty.</p>
+            <a href="{% url 'home' %}" style="color: #FE2C55; text-decoration: none; font-weight: 600;">Go back to shopping</a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+{% endblock %}

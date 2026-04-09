@@ -1,0 +1,51 @@
+{% extends 'store/base.html' %}
+
+{% block content %}
+{% load humanize %}
+
+<div class="container">
+    <div class="order-card">
+        <h2>My Orders</h2>
+
+        {% if orders %}
+        <table class="order-table">
+            <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>Image</th>
+                    <th>Quantity</th>
+                    <th>Total Price</th>
+                    <th>Date</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for order in orders %}
+                <tr>
+                    <td>**{{ order.product.name }}**</td>
+                    <td>
+                        <img src="{{ order.product.image.url }}" width="80" height="80" style="object-fit: cover; border-radius: 4px;">
+                    </td>
+                    <td>{{ order.quantity }}</td>
+                    <td>₱{{ order.total_price|intcomma }}</td>
+                    <td>{{ order.created_at|date:"M d, Y" }}</td>
+                    <td>
+                        <form method="POST" action="{% url 'cancel_order' order.id %}"
+                              onsubmit="return confirm('Are you sure you want to cancel this order?')">
+                            {% csrf_token %}
+                            <button type="submit" class="btn-cancel">Cancel</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <div class="empty-state">
+            <p style="color: #666; font-size: 18px; margin-bottom: 30px; font-weight: bolder; text-align: center;">You have no orders yet.</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+{% endblock %}

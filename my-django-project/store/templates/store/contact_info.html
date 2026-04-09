@@ -1,0 +1,45 @@
+{% extends 'store/base.html' %}
+
+{% block title %}Contact Info{% endblock %}
+
+{% block content %}
+<div style="max-width: 600px; margin: 50px auto; padding: 30px; background: #fff; border-radius: 20px; box-shadow: 0 6px 20px rgba(0,0,0,0.1); font-family: Arial, sans-serif;">
+
+    <h2 style="text-align: center; margin-bottom: 25px;">Contact Form</h2>
+
+    <form method="POST" style="display: flex; flex-direction: column; gap: 20px;">
+        {% csrf_token %}
+
+        <!-- Full Name -->
+        <div style="display: flex; flex-direction: column;">
+            <label for="full_name" style="font-weight:600; margin-bottom:5px;">Full Name</label>
+            <input type="text" name="full_name" id="full_name" placeholder="John Doe" 
+                   value="{{ profile.full_name }}" required
+                   style="padding:10px; border:1px solid #ccc; border-radius:8px;">
+        </div>
+
+        <!-- Mobile Number -->
+        <div style="display: flex; flex-direction: column;">
+            <label for="mobile" style="font-weight:600; margin-bottom:5px;">Mobile Number</label>
+            <input type="text" name="mobile" id="mobile" placeholder="09123456789" 
+                   value="{{ profile.mobile }}" required
+                   style="padding:10px; border:1px solid #ccc; border-radius:8px;">
+        </div>
+
+        <!-- Address -->
+        <div style="display: flex; flex-direction: column;">
+            <label for="address" style="font-weight:600; margin-bottom:5px;">Address</label>
+            <textarea name="address" id="address" placeholder="Enter your full address" required
+                      style="padding:10px; border:1px solid #ccc; border-radius:8px; resize:vertical;">{{ profile.address }}</textarea>
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" 
+                style="padding:15px; background:#FE2C55; color:white; border:none; border-radius:12px; font-weight:700; font-size:1rem; cursor:pointer; transition:0.3s;">
+            Save Info
+        </button>
+
+    </form>
+
+</div>
+{% endblock %}

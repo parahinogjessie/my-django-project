@@ -1,0 +1,867 @@
+:root { 
+    --black: #1a1a1a; 
+    --white: #ffffff; 
+    --gray: #f5f5f7; 
+    --accent-blue: #2196f3; 
+    --error-red: #ff4d4d;
+}
+
+* { 
+    margin: 0; 
+    padding: 0; 
+    box-sizing: border-box; 
+    font-family: 'Inter', sans-serif !important;   
+}
+
+body { 
+    background: var(--white); 
+    color: var(--black); 
+    line-height: 1.6; 
+}
+
+.navbar { 
+    background: #fff; 
+    padding: 15px 0; 
+    border-bottom: 1px solid #eee; 
+    position: sticky; 
+    top: 0; 
+    z-index: 1000; 
+}
+
+.nav-links { 
+    max-width: 1350px; 
+    margin: 0 auto; 
+    display: flex; 
+    justify-content: flex-end; 
+    align-items: center; 
+    padding: 0 20px; 
+    list-style: none; 
+    gap: 25px; 
+}
+
+.nav-links a { 
+    text-decoration: none; 
+    color: var(--black); 
+    font-weight: 600; 
+    font-size: 0.95rem; 
+}
+
+.nav-links a:hover { 
+    color: var(--accent-blue); 
+    transition: .5s; 
+}
+
+.hero {
+    display: flex; /* horizontal layout */
+    align-items: center;
+    justify-content: space-between;
+    max-width: 1200px; /* same as nav max-width for consistency */
+    margin: 0 auto;
+    padding: 80px 20px; /* space from top and sides */
+    gap: 40px; /* space between text and image */
+}
+
+.hero-content {
+    flex: 1; /* take left space */
+}
+
+.hero-content h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 20px;
+    color: var(--black);
+}
+
+.hero-content p {
+    font-size: 1.1rem;
+    margin-bottom: 30px;
+    color: #555;
+    line-height: 1.5;
+}
+
+.view-btn {
+    display: inline-block;
+    padding: 12px 30px;
+    background-color: var(--accent-blue);
+    color: #fff;
+    text-decoration: none;
+    font-weight: 600;
+    border-radius: 6px;
+    transition: background 0.3s ease;
+}
+
+.view-btn:hover {
+    background-color: #1a73e8; /* slightly darker blue */
+}
+
+.hero-image {
+    flex: 1; /* take right space */
+    text-align: center;
+}
+
+.hero-image img {
+    max-width: 100%;
+    height: auto;
+}
+
+.selection-title {
+    max-width: 1200px;  /* same as navbar & hero */
+    margin: 0 auto 30px auto;
+    padding: 0 20px;    /* align with navbar/hero */
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--black);
+}
+
+/* Section title */
+.selection-title {
+    max-width: 1200px;
+    margin: 0 auto 30px auto;
+    padding: 0 20px;
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--black);
+}
+
+/* Product grid layout */
+.product-grid { 
+    display: grid; 
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); 
+    gap: 30px; 
+    padding: 40px 20px; 
+    max-width: 1200px; 
+    margin: 0 auto; 
+}
+
+/* Product card */
+.product-card { 
+    background: #fff; 
+    border-radius: 28px; 
+    padding: 24px; 
+    border: 1px solid #f0f0f0; 
+    overflow: hidden; 
+    transition: 0.4s; 
+    display: flex;
+    flex-direction: column;      /* stack elements vertically */
+    justify-content: space-between; /* makes cards same height */
+    min-height: 480px;           /* fixed minimum height for uniformity */
+}
+
+.product-card:hover { 
+    transform: translateY(-8px); 
+    box-shadow: 0 15px 35px rgba(0,0,0,0.08); 
+}
+
+/* Section title */
+.selection-title {
+    max-width: 1200px;
+    margin: 0 auto 30px auto;
+    padding: 0 20px;
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--black);
+}
+
+/* Product grid layout */
+.product-grid { 
+    display: grid; 
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); 
+    gap: 30px; 
+    padding: 40px 20px; 
+    max-width: 1200px; 
+    margin: 0 auto; 
+}
+
+/* Product card */
+.product-card { 
+    background: #fff; 
+    border-radius: 28px; 
+    padding: 24px; 
+    border: 1px solid #f0f0f0; 
+    overflow: hidden; 
+    transition: 0.4s; 
+    display: flex;
+    flex-direction: column;      /* stack content vertically */
+    justify-content: space-between; /* buttons stick to bottom */
+    min-height: 500px;           /* all cards same height */
+}
+
+.product-card:hover { 
+    transform: translateY(-8px); 
+    box-shadow: 0 15px 35px rgba(0,0,0,0.08); 
+}
+
+/* Product grid */
+.product-grid { 
+    display: grid; 
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); 
+    gap: 30px; 
+    padding: 40px 20px; 
+    max-width: 1200px; 
+    margin: 0 auto; 
+}
+
+/* Product card */
+.product-card { 
+    background: #fff; 
+    border-radius: 28px; 
+    padding: 24px; 
+    border: 1px solid #f0f0f0; 
+    position: relative; 
+    overflow: hidden; 
+    transition: 0.4s; 
+    display: flex;
+    flex-direction: column;      /* stack content vertically */
+    justify-content: space-between; /* keep buttons at bottom */
+    min-height: 480px;           /* uniform card height */
+}
+
+.product-card:hover { 
+    transform: translateY(-8px); 
+    box-shadow: 0 15px 35px rgba(0,0,0,0.08); 
+}
+
+/* Description */
+.description { 
+    text-align: justify; 
+    flex-grow: 1; /* fills space so buttons stay at bottom */
+}
+
+.product-grid { 
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); 
+    gap: 30px; padding: 40px 20px; max-width: 1200px; margin: 0 auto; 
+}
+
+.product-card { 
+    background: #fff; border-radius: 28px; padding: 24px; border: 2px solid #f0f0f0; 
+    position: relative; overflow: hidden; transition: 0.4s; 
+}
+.product-card:hover { transform: translateY(-8px); box-shadow: 0 15px 35px rgba(0,0,0,0.08); }
+
+.description { text-align: justify; }
+
+/* Image Container & Zoom Button */
+.product-image-container {
+    position: relative;
+    /* Removed the gray background and padding here */
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.product-image {
+    display: block; 
+    margin: 0 auto; 
+    width: 100%;
+    max-width: 280px; /* Increased from 260px to make it bigger */
+    height: 220px;    /* Increased from 200px */
+    object-fit: cover; /* Forces the image to fill its bounding box */
+    object-position: center;
+    border-radius: 16px; /* Applies the rounded corners directly to the image */
+    overflow: hidden; /* Clips the sharp edges */
+    box-shadow: 0 4px 12px rgba(0,0,0,0.06); /* Adds a very soft shadow to make it pop */
+}
+
+/* Product title and description */
+.product-card h3 {
+    font-size: 1.25rem;
+    margin: 10px 0 8px;
+    color: var(--black);
+    text-align: center;
+}
+
+.product-card p {
+    font-size: 0.95rem;
+    color: #555;
+    line-height: 1.4;
+    text-align: justify;
+    flex-grow: 1; /* makes description fill space so buttons stay at bottom */
+}
+
+/* Price styling */
+.price {
+    margin: 10px 0;
+    font-weight: 600;
+    text-align: center;
+}
+
+.original-price {
+    text-decoration: line-through;
+    color: #999;
+}
+
+.discount-price {
+    color: var(--accent-blue);
+    font-size: 1.1rem;
+}
+
+/* Buttons container */
+.buttons {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 10px;
+}
+
+.buttons button {
+    flex: 1;
+    padding: 10px 20px;
+    background-color: var(--accent-blue);
+    border: none;
+    border-radius: 6px;
+    color: #fff;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.buttons button:hover {
+    background-color: #1a73e8;
+}
+
+.btn-logout {
+    background-color: #007bff; /* Matches your 'View Laptop' blue */
+    color: white;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 5px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    text-decoration: none; /* If it's an <a> tag */
+    display: inline-block;
+}
+
+.btn-logout:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+    color: white;
+}
+
+/* Container and Heading */
+h2 {
+    color: #333;
+    margin-bottom: 20px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Table Styling */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+    background-color: #fff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    overflow: hidden; /* Ensures borders look clean on corners */
+}
+
+th {
+    background-color: #f8f9fa;
+    color: #555;
+    font-weight: 600;
+    text-align: center;
+    padding: 15px;
+    border-bottom: 2px solid #dee2e6;
+}
+
+td {
+    text-align: center;
+    padding: 15px;
+    vertical-align: middle;
+    border-bottom: 1px solid #eee;
+    color: #444;
+}
+
+/* Product Image styling */
+table img {
+    border-radius: 5px;
+    object-fit: cover;
+    border: 1px solid #ddd;
+}
+
+/* Row Hover effect */
+tr:hover {
+    background-color: #fcfcfc;
+}
+
+/* Cancel Button Styling */
+.btn-cancel {
+    background-color: #dc3545; /* Red for warning/danger actions */
+    color: white;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 13px;
+    transition: background-color 0.2s ease;
+}
+
+.btn-cancel:hover {
+    background-color: #c82333;
+}
+
+/* Empty State */
+p {
+    color: #777;
+    font-style: italic;
+    margin-top: 20px;
+}
+
+
+/* Give the whole page a background color */
+body {
+    background-color: #f4f7f6; 
+    margin: 0;
+    flex-direction: column;
+    min-height: 100vh; /* Ensures the page is at least as tall as the screen */
+}
+
+/* Wrap your content in a container to center it and add padding */
+.main-content {
+    flex: 1; /* This "pushes" the footer to the bottom */
+    padding: 40px 10%; /* Adds space around the table */
+}
+
+/* Centers everything and prevents it from getting too wide */
+.container {
+    max-width: 1100px;
+    margin: 40px auto; /* 40px top/bottom, 'auto' centers it horizontally */
+    padding: 0 20px;
+}
+
+/* Wraps the table in a card-like box */
+.order-card {
+    background-color: #ffffff;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    border: 1px solid #e1e4e8;
+}
+
+/* Adjust the title spacing */
+.order-card h2 {
+    margin-top: 0;
+    margin-bottom: 25px;
+    font-size: 24px;
+    border-bottom: 2px solid #f0f0f0;
+    padding-bottom: 10px;
+}
+
+/* Reusing the container from the Orders page */
+.container {
+    max-width: 1100px;
+    margin: 40px auto;
+    padding: 0 20px;
+}
+
+/* Card wrapper for the cart */
+.cart-card {
+    background-color: #ffffff;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    border: 1px solid #e1e4e8;
+}
+
+.cart-card h1 {
+    margin-top: 0;
+    margin-bottom: 25px;
+    font-size: 28px;
+    color: #333;
+}
+
+/* Table refinements */
+.cart-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.cart-table th {
+    text-align: center;
+    padding: 15px;
+    border-bottom: 2px solid #f0f0f0;
+    color: #666;
+}
+
+.cart-table td {
+text-align: center;
+    padding: 15px;
+    vertical-align: middle;
+    border-bottom: 1px solid #eee;
+}
+
+/* Button Styles */
+.btn-remove {
+    background-color: #e53935;
+    color: white;
+    padding: 6px 12px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+.btn-remove:hover {
+    opacity: 0.8;
+}
+
+.btn-checkout {
+    background-color: #FE2C55; /* Your specific pink-red color */
+    color: white;
+    padding: 15px 35px;
+    border: none;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: 16px;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.btn-checkout:hover {
+    transform: scale(1.02);
+    background-color: #e6284d;
+}
+
+/* Responsive tweaks */
+@media (max-width: 900px) {
+    .product-card { min-height: unset; }
+    .product-grid { grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
+    .product-image-container { width: 100%; height: auto; }
+    .product-image { height: auto; }
+}
+
+
+/* Container to center the card on the screen */
+.login-page-wrapper {
+    margin: 40px auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 80vh;
+    padding: 20px;
+}
+
+.login-card {
+    display: flex;
+    width: 100%;
+    max-width: 850px;
+    background: #fff;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+}
+
+/* Left Side - Blue Gradient */
+.login-left {
+    flex: 1;
+    background: linear-gradient(135deg, #1e52b5 0%, #0a2d72 100%);
+    color: white;
+    padding: 50px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.welcome-content {
+    position: relative;
+    z-index: 2;
+}
+
+.login-left h1 { font-size: 38px; margin: 0; font-weight: 800; }
+.login-left p { font-size: 14px; line-height: 1.6; opacity: 0.7; }
+
+/* Right Side - White Form */
+.login-right {
+    flex: 1.2;
+    padding: 50px;
+    background: #fff;
+}
+
+.login-right h2 {
+    margin-top: 0;
+    font-size: 28px;
+    color: #333;
+    margin-bottom: 30px;
+}
+
+/* Inputs */
+.input-field {
+    margin-bottom: 20px;
+}
+
+.input-field input {
+    width: 100%;
+    padding: 12px 15px;
+    background: #f0f2f5;
+    border: none;
+    border-radius: 8px;
+    outline: none;
+    font-size: 14px;
+}
+
+.form-options {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: #666;
+    margin-bottom: 25px;
+}
+
+/* Buttons */
+.btn-signin {
+    width: 100%;
+    padding: 12px;
+    background: #1e52b5;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.btn-signin:hover { background: #0a2d72; }
+
+.btn-signin:disabled {
+    background: #cccccc;
+    cursor: not-allowed;
+}
+
+.btn-other {
+    width: 100%;
+    padding: 12px;
+    background: transparent;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    cursor: pointer;
+}
+
+/* Spacing and Links */
+.divider {
+    text-align: center;
+    margin: 15px 0;
+    position: relative;
+}
+
+.divider::before {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 1px;
+    background: #eee;
+    top: 50%;
+    left: 0;
+}
+
+.divider span {
+    background: #fff;
+    padding: 0 10px;
+    position: relative;
+    color: #999;
+    font-size: 12px;
+}
+
+.signup-link {
+    text-align: center;
+    font-size: 13px;
+    color: #666;
+}
+
+.signup-link a {
+    color: #1e52b5;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+/* Decorative circles like in the image */
+.circle-decoration {
+    position: absolute;
+    bottom: -50px;
+    left: -50px;
+    width: 200px;
+    height: 200px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 50%;
+}
+
+/* Container to center the card */
+.auth-page-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 80vh;
+    padding: 40px 20px;
+}
+
+.auth-card {
+    display: flex;
+    width: 100%;
+    max-width: 900px;
+    background: #fff;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+}
+
+/* Left Side - Blue Gradient (Same as your sample) */
+.auth-left {
+    flex: 1;
+    background: linear-gradient(135deg, #1e52b5 0%, #0a2d72 100%);
+    color: white;
+    padding: 50px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.auth-left h1 { font-size: 36px; margin: 0; font-weight: 800; text-transform: uppercase; }
+.auth-left p { font-size: 14px; line-height: 1.6; opacity: 0.7; }
+
+/* Right Side - White Form */
+.auth-right {
+    flex: 1.2;
+    padding: 50px;
+    background: #fff;
+}
+
+.auth-right h2 {
+    margin-top: 0;
+    font-size: 28px;
+    color: #333;
+    margin-bottom: 30px;
+}
+
+/* Form Inputs */
+.input-field {
+    margin-bottom: 15px;
+}
+
+.input-field input {
+    width: 100%;
+    padding: 14px 18px;
+    background: #f0f2f5;
+    border: none;
+    border-radius: 10px;
+    outline: none;
+    font-size: 14px;
+}
+
+/* Auth Buttons */
+.btn-auth {
+    width: 100%;
+    padding: 14px;
+    background: #1e52b5;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.3s ease;
+    margin-top: 10px;
+}
+
+.btn-auth:hover { background: #0a2d72; }
+
+.btn-auth:disabled {
+    background: #cccccc;
+    cursor: not-allowed;
+}
+
+/* Extras */
+.alert-limit {
+    background-color: #fff3e0;
+    color: #ef6c00;
+    padding: 10px;
+    border-radius: 8px;
+    font-size: 13px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.login-link {
+    text-align: center;
+    font-size: 13px;
+    color: #666;
+    margin-top: 20px;
+}
+
+.login-link a {
+    color: #1e52b5;
+    text-decoration: none;
+    font-weight: 700;
+}
+
+/* Decorative background circles */
+.circle-decoration {
+    position: absolute;
+    bottom: -60px;
+    left: -60px;
+    width: 220px;
+    height: 220px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 50%;
+}
+
+/* Container for the password field and eye */
+.password-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+/* Ensure the input box has padding on the right for the eye */
+.password-wrapper input {
+    width: 100% !important;
+    padding-right: 45px !important; /* Space so text doesn't go under the eye */
+}
+
+/* Styling and positioning for the eye icon */
+#togglePassword {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%); /* Perfectly centers it vertically */
+    cursor: pointer;
+    color: #999;
+    font-size: 16px;
+    transition: color 0.3s ease;
+    z-index: 10; /* Keeps it above the input */
+}
+
+/* Changes color when you hover over the eye */
+#togglePassword:hover {
+    color: #1e52b5;
+}
+
+/* Base style for input fields */
+.input-field input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    outline: none;
+    transition: all 0.3s ease; /* Smooth transition for all properties */
+}
+
+/* Hover effect: when the mouse is over the box */
+.input-field input:hover {
+    border-color: #3498db; /* Changes border to blue */
+    background-color: #f9f9f9; /* Very light grey background */
+}
+
+/* Focus effect: when the user clicks inside to type */
+.input-field input:focus {
+    border-color: #2980b9;
+    background-color: #fff;
+    box-shadow: 0 0 8px rgba(52, 152, 219, 0.3); /* Soft blue glow */
+}
+
+.home-container {
+    background-color: #fff;
+    margin-bottom: 20px auto;
+}

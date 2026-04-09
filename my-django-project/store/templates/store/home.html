@@ -1,0 +1,56 @@
+{% extends 'store/base.html' %}
+
+{% block title %}My Store{% endblock %}
+
+{% block content %}
+
+{% load static %}
+{% load humanize %}
+<div class="home-container">
+<section class="hero">
+    <div class="hero-content">
+        <h1>Laptop Deals You Don’t Want to Miss</h1>
+        <p>Upgrade your tech with powerful laptops at discounted prices. Limited deals available today.</p>
+        <a href="#featured-laptops" class="view-btn">View Laptop</a>
+    </div>
+
+    <div class="hero-image">
+        <img src="{% static 'images/laptop.png' %}" alt="Hero Image">
+    </div>
+</section>
+</div>
+
+<h2 id="featured-laptops" class="selection-title" style="margin-top: 30px;">Featured Laptops</h2>
+
+<div class="product-grid">
+    {% for product in products %}
+    <div class="product-card">
+        {% if product.image %}
+        <div class="product-image-container">
+            <img src="{{ product.image.url }}" alt="{{ product.name }}" class="product-image">
+        </div>
+        {% endif %}
+
+        <h3>{{ product.name }}</h3>
+        <p class="description">{{ product.description|truncatewords:20 }}</p>
+
+        <div class="price">
+            <span class="original-price">₱{{ product.original_price|intcomma }}</span><br>
+            <span class="discount-price">₱{{ product.discount_price|intcomma }}</span>
+        </div>
+
+        {% if user.is_authenticated %}
+            <div class="buttons">
+                <a href="{% url 'add_to_cart' product.id %}"><button>Add to Cart</button></a>
+                <a href="{% url 'order' product.id %}"><button>Buy Now</button></a>
+            </div>
+        {% else %}
+            <div class="buttons">
+                <a href="{% url 'login' %}"><button>Add to Cart</button></a>
+                <a href="{% url 'login' %}"><button>Buy Now</button></a>
+            </div>
+        {% endif %}
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
