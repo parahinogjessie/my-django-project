@@ -1,0 +1,11 @@
+<h2>Products</h2>
+{% for product in products %}
+    <div>
+        <h3>{{ product.name }}</h3>
+        <p>{{ product.description }}</p>
+        <p><del>₱{{ product.original_price }}</del> <strong>₱{{ product.discounted_price }}</strong></p>
+        {% if product.image %}
+            <img src="{{ product.image.url }}" alt="{{ product.name }}" width="150">
+        {% endif %}
+    </div>
+{% endfor %}

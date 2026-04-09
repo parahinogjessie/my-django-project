@@ -15,5 +15,10 @@ urlpatterns = [
     path("register/", views.register, name="register"),
     path('contact_info/', views.contact_info, name='contact_info'),
     path('checkout/', views.checkout, name='checkout'),
-    
+    path('products/', views.product_list, name='product_list'),
+    path('add-product/', views.add_product, name='add_product'),
+    path('approve-products/', views.approve_products, name='approve_products'),
+    path('staff-dashboard/', views.staff_dashboard, name='staff_dashboard'),
+    path('edit-product/<int:product_id>/', views.edit_product, name='edit_product'),
+    path('delete-product/<int:product_id>/', views.delete_product, name='delete_product'),
 ]

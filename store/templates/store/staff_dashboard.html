@@ -1,0 +1,40 @@
+<h2>Staff Dashboard</h2>
+<p>Welcome, {{ request.user.username }}! Here are your products:</p>
+
+{% if products %}
+    <table border="1" cellpadding="10">
+        <tr>
+            <th>Product Name</th>
+            <th>Original Price</th>
+            <th>Discounted Price</th>
+            <th>Status</th>
+            <th>Created At</th>
+            <th>Actions</th>
+        </tr>
+        {% for product in products %}
+        <tr>
+            <td>{{ product.name }}</td>
+            <td>₱{{ product.original_price }}</td>
+            <td>₱{{ product.discount_price }}</td>
+            <td>
+                {% if product.is_approved %}
+                    <span style="color:green;">Approved ✅</span>
+                {% else %}
+                    <span style="color:orange;">Pending ⏳</span>
+                {% endif %}
+            </td>
+            <td>{{ product.created_at|date:"M d, Y H:i" }}</td>
+            <td>
+                {% if not product.is_approved %}
+                    <a href="{% url 'edit_product' product.id %}">Edit</a> |
+                    <a href="{% url 'delete_product' product.id %}">Delete</a>
+                {% else %}
+                    -
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+{% else %}
+    <p>You haven't added any products yet.</p>
+{% endif %}

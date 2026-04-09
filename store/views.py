@@ -1,14 +1,93 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Product, Cart, CartItem, Order, Profile
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm 
 from django.contrib.auth import login, logout, authenticate
+from django.contrib.admin.views.decorators import staff_member_required
 from django.core.cache import cache
 from django.contrib.auth.models import User
 from django.utils import timezone
 from datetime import timedelta
 from django.contrib import messages
 from django.db import transaction
+from .forms import ProductForm
+
+def staff_check(user):
+    return user.is_staff
+
+# Staff adds product
+@login_required
+@user_passes_test(staff_check)
+def add_product(request):
+    if request.method == 'POST':
+        form = ProductForm(request.POST, request.FILES)
+        if form.is_valid():
+            product = form.save(commit=False)
+            product.added_by = request.user
+            product.is_approved = False
+            product.save()
+            return redirect('staff_dashboard')  # Optional: your staff dashboard
+    else:
+        form = ProductForm()
+    return render(request, 'store/add_product.html', {'form': form})
+
+@login_required
+@user_passes_test(staff_check)
+def staff_dashboard(request):
+    # get all products added by this staff user
+    products = Product.objects.filter(added_by=request.user).order_by('-created_at')
+    return render(request, 'store/staff_dashboard.html', {'products': products})
+
+@login_required
+@user_passes_test(staff_check)
+def edit_product(request, product_id):
+    product = get_object_or_404(Product, id=product_id, added_by=request.user)
+
+    # Only allow editing if not approved yet
+    if product.is_approved:
+        return redirect('staff_dashboard')
+
+    if request.method == 'POST':
+        form = ProductForm(request.POST, request.FILES, instance=product)
+        if form.is_valid():
+            form.save()
+            return redirect('staff_dashboard')
+    else:
+        form = ProductForm(instance=product)
+    
+    return render(request, 'store/edit_product.html', {'form': form, 'product': product})
+
+@login_required
+@user_passes_test(staff_check)
+def delete_product(request, product_id):
+    product = get_object_or_404(Product, id=product_id, added_by=request.user)
+
+    # Only allow deletion if not approved yet
+    if product.is_approved:
+        return redirect('staff_dashboard')
+
+    if request.method == 'POST':
+        product.delete()
+        return redirect('staff_dashboard')
+
+    return render(request, 'store/delete_product_confirm.html', {'product': product})
+
+# Admin approves product
+@staff_member_required
+def approve_products(request):
+    pending_products = Product.objects.filter(is_approved=False)
+    if request.method == 'POST':
+        product_id = request.POST.get('product_id')
+        product = get_object_or_404(Product, id=product_id)
+        product.is_approved = True
+        product.save()
+        return redirect('approve_products')
+    return render(request, 'store/approve_products.html', {'products': pending_products})
+
+# Show approved products to customers
+def product_list(request):
+    products = Product.objects.filter(is_approved=True)
+    return render(request, 'store/product_list.html', {'products': products})
 
 def home(request):
     products = Product.objects.all()

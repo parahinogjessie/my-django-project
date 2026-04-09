@@ -1,0 +1,19 @@
+<h2>Pending Products</h2>
+{% for product in products %}
+    <div>
+        <h3>{{ product.name }}</h3>
+        <p>{{ product.description }}</p>
+        <p>Original Price: ₱{{ product.original_price }}</p>
+        <p>Discounted Price: ₱{{ product.discounted_price }}</p>
+        {% if product.image %}
+            <img src="{{ product.image.url }}" alt="{{ product.name }}" width="150">
+        {% endif %}
+        <form method="post">
+            {% csrf_token %}
+            <input type="hidden" name="product_id" value="{{ product.id }}">
+            <button type="submit">Approve</button>
+        </form>
+    </div>
+{% empty %}
+    <p>No pending products.</p>
+{% endfor %}
