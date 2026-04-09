@@ -3,24 +3,89 @@
 {% block title %}Register{% endblock %}
 
 {% block content %}
-<h1>Register</h1>
+<div class="auth-page-wrapper">
+    <div class="auth-card">
+        <div class="auth-left">
+            <div class="welcome-content">
+                <h1>SHOP WITH US</h1>
+                <p style="color: aliceblue; margin-top: 20px;">Create an account to start shopping, save your favorite items, and enjoy a faster checkout experience.</p>
+                <div class="circle-decoration"></div>
+            </div>
+        </div>
 
-<form method="post">
-    {% csrf_token %}
-    <input type="text" name="username" placeholder="Username (min 15 chars)" required {% if cooldown %}disabled{% endif %}>
-    <input type="password" name="password" placeholder="Password (min 8 chars, 1 uppercase, 1 number)" required {% if cooldown %}disabled{% endif %}>
-    <input type="password" name="confirm_password" placeholder="Confirm Password" required {% if cooldown %}disabled{% endif %}>
-    <button type="submit" {% if cooldown %}disabled{% endif %}>Register</button>
-</form>
+        <div class="auth-right">
+            <h2 style="text-align: center;">Sign up</h2>
+            
+            {% if cooldown %}
+                <div class="alert-limit">
+                    <p>You have reached the daily registration limit. Try again tomorrow.</p>
+                </div>
+            {% endif %}
 
-{% if cooldown %}
-    <p style="color:orange;">You have reached the daily registration limit. Try again tomorrow.</p>
-{% endif %}
+            <form method="post">
+                {% csrf_token %}
+                <div class="input-field">
+                    <input type="text" name="username" placeholder="Username" required {% if cooldown %}disabled{% endif %}>
+                    <p style="color: gray; font-size: 11px; margin-top: 5px; opacity: 0.8;">(Minimum 15 characters)</p>
+                </div>
+                
+                <div class="input-field" style="position: relative;">
+                    <input type="password" name="password" id="regPassword" placeholder="Password" required {% if cooldown %}disabled{% endif %} style="width: 100%; padding-right: 45px;">
+                    <div id="toggleRegPassword" style="position: absolute; right: 15px; top: 18px; cursor: pointer; width: 20px; height: 20px;">
+                        <svg class="eyeIcon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="#666">
+                            <path class="eyePath" stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.644C3.483 8.65 7.63 5.8 12 5.8s8.517 2.85 9.964 5.878a1.012 1.012 0 0 1 0 .644C20.517 15.35 16.37 18.2 12 18.2s-8.517-2.85-9.964-5.878z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0z" />
+                        </svg>
+                    </div>
+                    <p style="color: gray; font-size: 11px; margin-top: 5px; opacity: 0.8;">(Minimum 8 characters, 1 uppercase, 1 number)</p>
+                </div>
 
-<p>Already have an account?
-    <a href="{% url 'login' %}" 
-        style="padding:5px 10px; background-color:#000000; color:white; border:none; border-radius:3px; text-decoration:none;">
-        Login
-    </a>
-</p>
+                <div class="input-field" style="position: relative;">
+                    <input type="password" name="confirm_password" id="confirmPassword" placeholder="Confirm Password" required {% if cooldown %}disabled{% endif %} style="width: 100%; padding-right: 45px;">
+                    <div id="toggleConfirmPassword" style="position: absolute; right: 15px; top: 18px; cursor: pointer; width: 20px; height: 20px;">
+                        <svg class="eyeIcon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="#666">
+                            <path class="eyePath" stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.644C3.483 8.65 7.63 5.8 12 5.8s8.517 2.85 9.964 5.878a1.012 1.012 0 0 1 0 .644C20.517 15.35 16.37 18.2 12 18.2s-8.517-2.85-9.964-5.878z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0z" />
+                        </svg>
+                    </div>
+                    <p style="color: gray; font-size: 11px; margin-top: 5px; opacity: 0.8;">(Re-enter your password)</p>
+                </div>
+
+                <button type="submit" class="btn-auth" {% if cooldown %}disabled{% endif %} style="margin-top: 10px;">
+                    Create Account
+                </button>
+            </form>
+
+            <div class="divider"><span>or</span></div>
+
+            <button class="btn-other">Sign up with other</button>
+
+            <p class="login-link">
+                Already have an account? <a href="{% url 'login' %}">Sign in</a>
+            </p>
+        </div>
+    </div>
+</div>
+
+<script>
+    // SVGs for the two states
+    const openEye = '<path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.644C3.483 8.65 7.63 5.8 12 5.8s8.517 2.85 9.964 5.878a1.012 1.012 0 0 1 0 .644C20.517 15.35 16.37 18.2 12 18.2s-8.517-2.85-9.964-5.878z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0z" />';
+    const closedEye = '<path stroke-linecap="round" stroke-linejoin="round" d="M3.98 8.223A10.477 10.477 0 0 0 1.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.451 10.451 0 0 1 12 4.5c4.756 0 8.773 3.162 10.065 7.498a10.522 10.522 0 0 1-4.293 5.774M6.228 6.228 3 3m3.228 3.228 3.65 3.65m7.894 7.894L21 21m-3.228-3.228-3.65-3.65m0 0a3 3 0 1 0-4.243-4.243m4.242 4.242L9.88 9.88" />';
+
+    function setupToggle(buttonId, inputId) {
+        const btn = document.getElementById(buttonId);
+        const input = document.getElementById(inputId);
+        const svg = btn.querySelector('svg');
+
+        btn.addEventListener('click', function() {
+            const isPassword = input.getAttribute('type') === 'password';
+            input.setAttribute('type', isPassword ? 'text' : 'password');
+            svg.innerHTML = isPassword ? closedEye : openEye;
+        });
+    }
+
+    // Initialize both buttons
+    setupToggle('toggleRegPassword', 'regPassword');
+    setupToggle('toggleConfirmPassword', 'confirmPassword');
+</script>
 {% endblock %}

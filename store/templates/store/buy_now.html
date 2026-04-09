@@ -1,0 +1,52 @@
+{% extends 'store/base.html' %}
+{% load humanize %}
+
+{% block title %}Buy Now{% endblock %}
+
+{% block content %}
+<div style="max-width:600px; margin:40px auto; padding:25px; background:#fff; border-radius:20px; box-shadow:0 6px 20px rgba(0,0,0,0.1); font-family:Arial;">
+    
+    <h2 style="text-align:center; margin-bottom:20px;">Buy Now</h2>
+
+    <div style="display:flex; gap:20px; align-items:center; margin-bottom:20px;">
+        {% if product.image %}
+            <img src="{{ product.image.url }}" alt="{{ product.name }}" width="150" style="border-radius:10px;">
+        {% endif %}
+        <div>
+            <p style="margin:0; font-weight:600;">{{ product.name }}</p>
+            {% if product.discount_price < product.original_price %}
+                <p style="margin:0; text-decoration:line-through; color:#888;">₱{{ product.original_price|intcomma }}</p>
+                <p style="margin:0; color:#FE2C55; font-weight:700;">₱{{ product.discount_price|intcomma }}</p>
+            {% else %}
+                <p style="margin:0; font-weight:700;">₱{{ product.original_price|intcomma }}</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <form method="POST">
+        {% csrf_token %}
+        
+        <div style="margin-bottom:15px;">
+            <label>Quantity:</label>
+            <input type="number" name="quantity" value="1" min="1" style="width:60px;">
+        </div>
+
+        <div style="margin-bottom:15px;">
+            <label>Full Name:</label>
+            <input type="text" name="full_name" value="{{ profile.full_name|default:'' }}" required style="width:100%;">
+        </div>
+
+        <div style="margin-bottom:15px;">
+            <label>Mobile:</label>
+            <input type="text" name="mobile" value="{{ profile.mobile|default:'' }}" required style="width:100%;">
+        </div>
+
+        <div style="margin-bottom:15px;">
+            <label>Address:</label>
+            <textarea name="address" required style="width:100%;">{{ profile.address|default:'' }}</textarea>
+        </div>
+
+        <button type="submit" name="place_order" style="background:#FE2C55; color:#fff; padding:10px 20px; border:none; border-radius:8px;">Place Order</button>
+    </form>
+</div>
+{% endblock %}

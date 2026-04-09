@@ -14,7 +14,7 @@
         <div style="display: flex; flex-direction: column;">
             <label for="full_name" style="font-weight:600; margin-bottom:5px;">Full Name</label>
             <input type="text" name="full_name" id="full_name" placeholder="John Doe" 
-                   value="{{ profile.full_name }}" required
+                   value="{{ profile.full_name|default:'' }}" required
                    style="padding:10px; border:1px solid #ccc; border-radius:8px;">
         </div>
 
@@ -22,7 +22,7 @@
         <div style="display: flex; flex-direction: column;">
             <label for="mobile" style="font-weight:600; margin-bottom:5px;">Mobile Number</label>
             <input type="text" name="mobile" id="mobile" placeholder="09123456789" 
-                   value="{{ profile.mobile }}" required
+                   value="{{ profile.mobile|default:'' }}" required
                    style="padding:10px; border:1px solid #ccc; border-radius:8px;">
         </div>
 
@@ -30,7 +30,7 @@
         <div style="display: flex; flex-direction: column;">
             <label for="address" style="font-weight:600; margin-bottom:5px;">Address</label>
             <textarea name="address" id="address" placeholder="Enter your full address" required
-                      style="padding:10px; border:1px solid #ccc; border-radius:8px; resize:vertical;">{{ profile.address }}</textarea>
+                      style="padding:10px; border:1px solid #ccc; border-radius:8px; resize:vertical;">{{ profile.address|default:'' }}</textarea>
         </div>
 
         <!-- Submit Button -->

@@ -41,7 +41,7 @@
         {% if user.is_authenticated %}
             <div class="buttons">
                 <a href="{% url 'add_to_cart' product.id %}"><button>Add to Cart</button></a>
-                <a href="{% url 'order' product.id %}"><button>Buy Now</button></a>
+                <a href="{% url 'buy_now' product.id %}"><button>Buy Now</button></a>
             </div>
         {% else %}
             <div class="buttons">

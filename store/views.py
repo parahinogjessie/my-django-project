@@ -35,11 +35,10 @@ def cart(request):
 
     # compute subtotal
     for item in cart_items:
-        item.subtotal = (item.product.discount_price or item.quantity) * item.quantity
+        item.subtotal = (item.product.discount_price or item.product.original_price) * item.quantity
 
     total = sum(item.subtotal for item in cart_items)
 
-    # 🔥 ADD THIS PART
     if request.method == "POST":
         selected_ids = request.POST.getlist("cart_item_ids")
 
@@ -118,6 +117,50 @@ def checkout(request):
 
     return redirect('cart')  # if no POST, go back to cart
 
+@login_required(login_url='login')
+def buy_now(request, product_id):
+    # Get the product
+    product = get_object_or_404(Product, id=product_id)
+    
+    # Get or create user's profile
+    profile = getattr(request.user, 'profile', None)
+
+    if request.method == "POST":
+        quantity = int(request.POST.get("quantity", 1))
+        price = product.discount_price if product.discount_price else product.original_price
+
+        # Update or create profile info
+        full_name = request.POST.get('full_name')
+        mobile = request.POST.get('mobile')
+        address = request.POST.get('address')
+        if profile:
+            profile.full_name = full_name
+            profile.mobile = mobile
+            profile.address = address
+            profile.save()
+        else:
+            profile = Profile.objects.create(
+                user=request.user,
+                full_name=full_name,
+                mobile=mobile,
+                address=address
+            )
+
+        # Create the order
+        Order.objects.create(
+            user=request.user,
+            product=product,
+            quantity=quantity,
+            total_price=price * quantity
+        )
+
+        return redirect('order_history')
+
+    # GET request → show Buy Now page
+    return render(request, 'store/buy_now.html', {
+        'product': product,
+        'profile': profile
+    })
 
 @login_required(login_url='login')
 def order_history(request):
@@ -257,6 +300,8 @@ def contact_info(request):
                 address=address
             )
 
-        return redirect('checkout')  # or redirect wherever you want
+        messages.success(request, "Info saved successfully!")
+
+        return redirect('home')  # or redirect wherever you want
 
     return render(request, 'store/contact_info.html', {'profile': profile})
