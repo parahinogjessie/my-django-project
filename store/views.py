@@ -3,7 +3,6 @@ from .models import Product, Cart, CartItem, Order, Profile
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm 
 from django.contrib.auth import login, logout, authenticate
-from django.contrib.admin.views.decorators import staff_member_required
 from django.core.cache import cache
 from django.contrib.auth.models import User
 from django.utils import timezone
@@ -12,8 +11,54 @@ from django.contrib import messages
 from django.db import transaction
 from .forms import ProductForm
 
+def is_admin(user):
+    return user.is_authenticated and user.is_superuser
+
+@login_required
+@user_passes_test(is_admin)
+def admin_dashboard(request):
+
+    total_products = Product.objects.count()
+    total_orders = Order.objects.count()
+    total_users = User.objects.count()
+
+    recent_orders = Order.objects.all().order_by('-id')[:5]
+    total_revenue = sum(order.total_price for order in Order.objects.all())
+
+    context = {
+        'total_products': total_products,
+        'total_orders': total_orders,
+        'total_users': total_users,
+        'total_revenue': total_revenue,
+        'recent_orders': recent_orders,
+    }
+
+    return render(request, "store/admin_dashboard.html", context)
+
+@login_required
+@user_passes_test(is_admin)
+def all_orders(request):
+    orders = Order.objects.select_related('user', 'product').order_by('-id')
+
+    return render(request, 'store/all_orders.html', {
+        'orders': orders
+    })
 def staff_check(user):
-    return user.is_staff
+    return user.is_authenticated and user.is_staff and not user.is_superuser
+
+@login_required
+@user_passes_test(is_admin)
+def update_order_status(request, order_id):
+    order = get_object_or_404(Order, id=order_id)
+
+    if request.method == "POST":
+        new_status = request.POST.get("status")
+
+        if new_status in ["pending", "shipped", "delivered"]:
+            order.status = new_status
+            order.save()
+
+    return redirect('all_orders')
 
 # Staff adds product
 @login_required
@@ -24,7 +69,7 @@ def add_product(request):
         if form.is_valid():
             product = form.save(commit=False)
             product.added_by = request.user
-            product.is_approved = False
+            product.status = 'pending'
             product.save()
             return redirect('staff_dashboard')  # Optional: your staff dashboard
     else:
@@ -44,7 +89,7 @@ def edit_product(request, product_id):
     product = get_object_or_404(Product, id=product_id, added_by=request.user)
 
     # Only allow editing if not approved yet
-    if product.is_approved:
+    if product.status == 'approved':
         return redirect('staff_dashboard')
 
     if request.method == 'POST':
@@ -63,7 +108,7 @@ def delete_product(request, product_id):
     product = get_object_or_404(Product, id=product_id, added_by=request.user)
 
     # Only allow deletion if not approved yet
-    if product.is_approved:
+    if product.status == 'approved':
         return redirect('staff_dashboard')
 
     if request.method == 'POST':
@@ -73,24 +118,39 @@ def delete_product(request, product_id):
     return render(request, 'store/delete_product_confirm.html', {'product': product})
 
 # Admin approves product
-@staff_member_required
+@login_required
+@user_passes_test(is_admin)
 def approve_products(request):
-    pending_products = Product.objects.filter(is_approved=False)
+    pending_products = Product.objects.filter(status='pending')
+
     if request.method == 'POST':
         product_id = request.POST.get('product_id')
+        action = request.POST.get('action')
+
         product = get_object_or_404(Product, id=product_id)
-        product.is_approved = True
+
+        # APPROVE
+        if action == "approve":
+            product.status = "approved"
+
+        # REJECT
+        elif action == "reject":
+            product.status = "rejected"
+
         product.save()
         return redirect('approve_products')
-    return render(request, 'store/approve_products.html', {'products': pending_products})
+
+    return render(request, 'store/approve_products.html', {
+        'products': pending_products
+    })
 
 # Show approved products to customers
 def product_list(request):
-    products = Product.objects.filter(is_approved=True)
+    products = Product.objects.filter(status='approved')
     return render(request, 'store/product_list.html', {'products': products})
 
 def home(request):
-    products = Product.objects.all()
+    products = Product.objects.filter(status='approved')
     return render(request, 'store/home.html',{'products': products})
 
 @login_required(login_url='login')
@@ -296,11 +356,20 @@ def user_login(request):
 
         # Try to authenticate
         user = authenticate(request, username=username, password=password)
+
         if user:
             login(request, user)
             cache.delete(cache_key)  # clear attempts after successful login
             messages.success(request, "Logged in successfully!")
-            return redirect("home")
+
+            # ✅ ROLE-BASED REDIRECT (ADMIN / STAFF / USER)
+            if user.is_superuser:
+                return redirect("admin_dashboard")
+            elif user.is_staff:
+                return redirect("staff_dashboard")
+            else:
+                return redirect("home")
+
         else:
             # Increment attempts on failure
             attempts["count"] += 1
@@ -354,18 +423,23 @@ def user_logout(request):
     logout(request)
     return redirect('home')
 
+from .models import Profile, ContactMessage
+
 @login_required(login_url='login')
-def contact_info(request):
+def contact_us(request):
     try:
         profile = Profile.objects.get(user=request.user)
     except Profile.DoesNotExist:
-        profile = None  # profile doesn’t exist yet
+        profile = None
 
     if request.method == "POST":
         full_name = request.POST.get('full_name')
+        email = request.POST.get('email')
         mobile = request.POST.get('mobile')
         address = request.POST.get('address')
+        message = request.POST.get('message')
 
+        # Save/update profile
         if profile:
             profile.full_name = full_name
             profile.mobile = mobile
@@ -379,8 +453,21 @@ def contact_info(request):
                 address=address
             )
 
-        messages.success(request, "Info saved successfully!")
+        # Save message
+        ContactMessage.objects.create(
+            user=request.user,
+            full_name=full_name,
+            email=email,
+            mobile=mobile,
+            address=address,
+            message=message
+        )
 
-        return redirect('home')  # or redirect wherever you want
+        # Update user email
+        request.user.email = email
+        request.user.save()
 
-    return render(request, 'store/contact_info.html', {'profile': profile})
+        messages.success(request, "Message sent successfully!")
+        return redirect('home')
+
+    return render(request, 'store/contact_us.html', {'profile': profile})

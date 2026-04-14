@@ -1,6 +1,107 @@
-<h2>Add Product</h2>
-<form method="POST" enctype="multipart/form-data">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Add Product</button>
-</form>
+<style>
+body {
+    background: #f4f8ff;
+    font-family: Arial, sans-serif;
+}
+
+.add-product-container {
+    position: relative;
+    width: 100%;
+    max-width: 500px;
+    margin: 60px auto;
+    background: #ffffff;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0, 0, 255, 0.08);
+}
+
+.add-product-container h2 {
+    text-align: center;
+    color: #1e4ed8;
+    margin-bottom: 20px;
+    font-size: 26px;
+}
+
+/* Back Button (top-right corner) */
+.back-btn {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    padding: 8px 12px;
+    background: #e0e7ff;
+    color: #1e4ed8;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: bold;
+    font-size: 14px;
+    transition: 0.3s;
+}
+
+.back-btn:hover {
+    background: #c7d2fe;
+}
+
+/* Form */
+.add-product-form p {
+    margin-bottom: 15px;
+}
+
+.add-product-form label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: #1e3a8a;
+}
+
+.add-product-form input,
+.add-product-form select,
+.add-product-form textarea {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #c7d2fe;
+    border-radius: 8px;
+    outline: none;
+    transition: 0.3s;
+    background: #f9fbff;
+}
+
+.add-product-form input:focus,
+.add-product-form select:focus,
+.add-product-form textarea:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 6px rgba(37, 99, 235, 0.3);
+}
+
+/* Submit Button */
+.add-product-form button {
+    width: 100%;
+    padding: 12px;
+    background: #2563eb;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: 0.3s;
+}
+
+.add-product-form button:hover {
+    background: #1e40af;
+}
+</style>
+
+<div class="add-product-container">
+
+    <!-- Back Button (Top Right) -->
+    <a href="{% url 'staff_dashboard' %}" class="back-btn">← Back</a>
+
+    <h2>Add Product</h2>
+
+    <form method="POST" enctype="multipart/form-data" class="add-product-form">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Add Product</button>
+    </form>
+
+</div>

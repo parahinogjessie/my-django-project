@@ -3,6 +3,23 @@
 {% block title %}Register{% endblock %}
 
 {% block content %}
+
+<!-- ✅ FIX: Remove browser default password eye -->
+<style>
+input[type="password"]::-ms-reveal,
+input[type="password"]::-ms-clear {
+    display: none;
+}
+
+input[type="password"]::-webkit-textfield-decoration-container {
+    display: none !important;
+}
+
+input[type="password"]::-webkit-credentials-auto-fill-button {
+    display: none !important;
+}
+</style>
+
 <div class="auth-page-wrapper">
     <div class="auth-card">
         <div class="auth-left">
@@ -29,29 +46,62 @@
                     <p style="color: gray; font-size: 11px; margin-top: 5px; opacity: 0.8;">(Minimum 15 characters)</p>
                 </div>
                 
+                <!-- ✅ PASSWORD -->
                 <div class="input-field" style="position: relative;">
-                    <input type="password" name="password" id="regPassword" placeholder="Password" required {% if cooldown %}disabled{% endif %} style="width: 100%; padding-right: 45px;">
-                    <div id="toggleRegPassword" style="position: absolute; right: 15px; top: 18px; cursor: pointer; width: 20px; height: 20px;">
-                        <svg class="eyeIcon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="#666">
-                            <path class="eyePath" stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.644C3.483 8.65 7.63 5.8 12 5.8s8.517 2.85 9.964 5.878a1.012 1.012 0 0 1 0 .644C20.517 15.35 16.37 18.2 12 18.2s-8.517-2.85-9.964-5.878z" />
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0z" />
+                    <input type="password" name="password" id="regPassword" placeholder="Password"
+                           autocomplete="new-password"
+                           required {% if cooldown %}disabled{% endif %}
+                           style="width: 100%; padding-right: 45px;">
+
+                    <div id="toggleRegPassword" style="position: absolute; right: 15px; top: 18px; cursor: pointer;">
+                        
+                        <!-- open -->
+                        <svg id="eyeOpen1" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="#666" width="20" height="20">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M2.036 12.322a1.012 1.012 0 0 1 0-.644C3.483 8.65 7.63 5.8 12 5.8s8.517 2.85 9.964 5.878a1.012 1.012 0 0 1 0 .644C20.517 15.35 16.37 18.2 12 18.2s-8.517-2.85-9.964-5.878z"/>
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/>
                         </svg>
+
+                        <!-- closed -->
+                        <svg id="eyeClosed1" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="#666" width="20" height="20" style="display:none;">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M3 3l18 18M10.58 10.58A3 3 0 0 0 13.42 13.42M9.88 9.88a3 3 0 1 1 4.24 4.24"/>
+                        </svg>
+
                     </div>
-                    <p style="color: gray; font-size: 11px; margin-top: 5px; opacity: 0.8;">(Minimum 8 characters, 1 uppercase, 1 number)</p>
+
+                    <p style="color: gray; font-size: 11px; margin-top: 5px;">(Minimum 8 characters, 1 uppercase, 1 number)</p>
                 </div>
 
+                <!-- ✅ CONFIRM PASSWORD -->
                 <div class="input-field" style="position: relative;">
-                    <input type="password" name="confirm_password" id="confirmPassword" placeholder="Confirm Password" required {% if cooldown %}disabled{% endif %} style="width: 100%; padding-right: 45px;">
-                    <div id="toggleConfirmPassword" style="position: absolute; right: 15px; top: 18px; cursor: pointer; width: 20px; height: 20px;">
-                        <svg class="eyeIcon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="#666">
-                            <path class="eyePath" stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.644C3.483 8.65 7.63 5.8 12 5.8s8.517 2.85 9.964 5.878a1.012 1.012 0 0 1 0 .644C20.517 15.35 16.37 18.2 12 18.2s-8.517-2.85-9.964-5.878z" />
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0z" />
+                    <input type="password" name="confirm_password" id="confirmPassword"
+                           autocomplete="new-password"
+                           placeholder="Confirm Password"
+                           required {% if cooldown %}disabled{% endif %}
+                           style="width: 100%; padding-right: 45px;">
+
+                    <div id="toggleConfirmPassword" style="position: absolute; right: 15px; top: 18px; cursor: pointer;">
+                        
+                        <svg id="eyeOpen2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="#666" width="20" height="20">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M2.036 12.322a1.012 1.012 0 0 1 0-.644C3.483 8.65 7.63 5.8 12 5.8s8.517 2.85 9.964 5.878a1.012 1.012 0 0 1 0 .644C20.517 15.35 16.37 18.2 12 18.2s-8.517-2.85-9.964-5.878z"/>
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/>
                         </svg>
+
+                        <svg id="eyeClosed2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="#666" width="20" height="20" style="display:none;">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M3 3l18 18M10.58 10.58A3 3 0 0 0 13.42 13.42M9.88 9.88a3 3 0 1 1 4.24 4.24"/>
+                        </svg>
+
                     </div>
-                    <p style="color: gray; font-size: 11px; margin-top: 5px; opacity: 0.8;">(Re-enter your password)</p>
+
+                    <p style="color: gray; font-size: 11px;">(Re-enter your password)</p>
                 </div>
 
-                <button type="submit" class="btn-auth" {% if cooldown %}disabled{% endif %} style="margin-top: 10px;">
+                <button type="submit" class="btn-auth" {% if cooldown %}disabled{% endif %}>
                     Create Account
                 </button>
             </form>
@@ -67,25 +117,28 @@
     </div>
 </div>
 
+<!-- ✅ FIXED SCRIPT -->
 <script>
-    // SVGs for the two states
-    const openEye = '<path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.644C3.483 8.65 7.63 5.8 12 5.8s8.517 2.85 9.964 5.878a1.012 1.012 0 0 1 0 .644C20.517 15.35 16.37 18.2 12 18.2s-8.517-2.85-9.964-5.878z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0z" />';
-    const closedEye = '<path stroke-linecap="round" stroke-linejoin="round" d="M3.98 8.223A10.477 10.477 0 0 0 1.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.451 10.451 0 0 1 12 4.5c4.756 0 8.773 3.162 10.065 7.498a10.522 10.522 0 0 1-4.293 5.774M6.228 6.228 3 3m3.228 3.228 3.65 3.65m7.894 7.894L21 21m-3.228-3.228-3.65-3.65m0 0a3 3 0 1 0-4.243-4.243m4.242 4.242L9.88 9.88" />';
+function setupToggle(inputId, openId, closedId) {
+    const input = document.getElementById(inputId);
+    const openEye = document.getElementById(openId);
+    const closedEye = document.getElementById(closedId);
 
-    function setupToggle(buttonId, inputId) {
-        const btn = document.getElementById(buttonId);
-        const input = document.getElementById(inputId);
-        const svg = btn.querySelector('svg');
+    openEye.parentElement.addEventListener('click', function () {
+        if (input.type === 'password') {
+            input.type = 'text';
+            openEye.style.display = 'none';
+            closedEye.style.display = 'block';
+        } else {
+            input.type = 'password';
+            openEye.style.display = 'block';
+            closedEye.style.display = 'none';
+        }
+    });
+}
 
-        btn.addEventListener('click', function() {
-            const isPassword = input.getAttribute('type') === 'password';
-            input.setAttribute('type', isPassword ? 'text' : 'password');
-            svg.innerHTML = isPassword ? closedEye : openEye;
-        });
-    }
-
-    // Initialize both buttons
-    setupToggle('toggleRegPassword', 'regPassword');
-    setupToggle('toggleConfirmPassword', 'confirmPassword');
+setupToggle('regPassword', 'eyeOpen1', 'eyeClosed1');
+setupToggle('confirmPassword', 'eyeOpen2', 'eyeClosed2');
 </script>
+
 {% endblock %}

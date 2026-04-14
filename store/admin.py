@@ -1,5 +1,7 @@
 from django.contrib import admin
-from .models import Product, Cart, CartItem, Order, Profile
+from .models import Product, Cart, CartItem, Order, Profile, ContactMessage
+
+admin.site.register(ContactMessage)
 
 # Safe way to unregister only if registered
 try:
@@ -9,8 +11,8 @@ except admin.sites.NotRegistered:
 
 # Custom ProductAdmin
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ('name', 'original_price', 'added_by', 'is_approved', 'created_at')
-    list_filter = ('is_approved', 'added_by')
+    list_display = ('name', 'original_price', 'added_by', 'status', 'created_at')
+    list_filter = ('status', 'added_by')
     search_fields = ('name', 'description', 'added_by__username')
     ordering = ('-created_at',)
 

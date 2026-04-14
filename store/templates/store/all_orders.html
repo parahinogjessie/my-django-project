@@ -1,0 +1,170 @@
+<style>
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f4f8ff;
+}
+
+/* Header */
+.orders-header {
+    background: #1e4ed8;
+    color: white;
+    padding: 20px;
+    font-size: 20px;
+    font-weight: bold;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Header title */
+.header-title {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+/* Back button (inside header) */
+.back-btn {
+    padding: 8px 12px;
+    background: white;
+    color: #1e4ed8;
+    text-decoration: none;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: bold;
+    transition: 0.2s;
+}
+
+.back-btn:hover {
+    background: #e0e7ff;
+}
+
+/* Container */
+.container {
+    padding: 25px;
+}
+
+/* Table */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 8px 20px rgba(0,0,255,0.08);
+}
+
+th {
+    background: #e0e7ff;
+    color: #1e3a8a;
+    padding: 12px;
+    text-align: center;
+    font-size: 14px;
+}
+
+td {
+    padding: 12px;
+    text-align: center;
+    border-bottom: 1px solid #eee;
+    font-size: 14px;
+}
+
+/* Hover effect */
+tr:hover {
+    background: #f0f6ff;
+}
+
+/* Status badge */
+.badge {
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    color: white;
+}
+
+.pending { background: orange; }
+.shipped { background: #2563eb; }
+.delivered { background: green; }
+
+/* Update form */
+.status-form select {
+    padding: 5px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+.status-form button {
+    padding: 5px 10px;
+    background: #2563eb;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.status-form button:hover {
+    background: #1e40af;
+}
+</style>
+
+<div class="orders-header">
+    <div class="header-title">📦 All Orders Management</div>
+
+    <a href="{% url 'admin_dashboard' %}" class="back-btn">
+        ← Back to Dashboard
+    </a>
+</div>
+
+<div class="container">
+
+    <table>
+        <tr>
+            <th>Order ID</th>
+            <th>User</th>
+            <th>Product</th>
+            <th>Quantity</th>
+            <th>Total Price</th>
+            <th>Status</th>
+            <th>Date</th>
+            <th>Action</th>
+        </tr>
+
+        {% for order in orders %}
+        <tr>
+            <td>#{{ order.id }}</td>
+            <td>{{ order.user.username }}</td>
+            <td>{{ order.product.name }}</td>
+            <td>{{ order.quantity }}</td>
+            <td>₱{{ order.total_price }}</td>
+
+            <td>
+                <span class="badge {{ order.status }}">
+                    {{ order.status }}
+                </span>
+            </td>
+
+            <td>{{ order.created_at }}</td>
+
+            <td>
+                <form method="POST" action="{% url 'update_order_status' order.id %}" class="status-form">
+                    {% csrf_token %}
+
+                    <select name="status">
+                        <option value="pending" {% if order.status == 'pending' %}selected{% endif %}>Pending</option>
+                        <option value="shipped" {% if order.status == 'shipped' %}selected{% endif %}>Shipped</option>
+                        <option value="delivered" {% if order.status == 'delivered' %}selected{% endif %}>Delivered</option>
+                    </select>
+
+                    <button type="submit">Update</button>
+                </form>
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="8">No orders found</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+</div>

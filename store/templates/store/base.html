@@ -2,7 +2,7 @@
 <html>
 <head>
         {% load static %}
-    <title>{% block title %}My Store{% endblock %}</title>
+    <title>{% block title %}SmartSave{% endblock %}</title>
     <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
 </head>
 <body>
@@ -11,7 +11,7 @@
             <li><a href="{% url 'home' %}">Home</a></li>
             <li><a href="{% url 'cart' %}">View Cart</a></li>
             <li><a href="{% url 'order_history' %}">Orders</a></li>
-            <li><a href="{% url 'contact_info' %}">Contact Info</a></li>
+            <li><a href="{% url 'contact_us' %}">Contact Us</a></li>
 
             {% if user.is_authenticated %}
                 <li>Hello, {{ user.username }}</li>

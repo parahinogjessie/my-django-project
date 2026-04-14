@@ -1,19 +1,142 @@
-<h2>Pending Products</h2>
-{% for product in products %}
-    <div>
-        <h3>{{ product.name }}</h3>
-        <p>{{ product.description }}</p>
-        <p>Original Price: ₱{{ product.original_price }}</p>
-        <p>Discounted Price: ₱{{ product.discounted_price }}</p>
-        {% if product.image %}
-            <img src="{{ product.image.url }}" alt="{{ product.name }}" width="150">
-        {% endif %}
-        <form method="post">
-            {% csrf_token %}
-            <input type="hidden" name="product_id" value="{{ product.id }}">
-            <button type="submit">Approve</button>
-        </form>
-    </div>
-{% empty %}
-    <p>No pending products.</p>
-{% endfor %}
+<style>
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f4f8ff;
+}
+
+/* HEADER (same style as orders page) */
+.page-header {
+    background: #1e4ed8;
+    color: white;
+    padding: 20px;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.page-header h2 {
+    margin: 0;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+/* Back button (same style as orders page) */
+.back-btn {
+    padding: 8px 12px;
+    background: white;
+    color: #1e4ed8;
+    text-decoration: none;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: bold;
+    transition: 0.2s;
+}
+
+.back-btn:hover {
+    background: #e0e7ff;
+}
+
+/* Container */
+.approve-container {
+    padding: 30px;
+}
+
+/* Product card */
+.product-card {
+    background: white;
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0,0,255,0.05);
+}
+
+.product-card h3 {
+    margin: 0;
+    color: #1e3a8a;
+}
+
+.product-card p {
+    color: #555;
+    font-size: 14px;
+}
+
+/* Image */
+.product-card img {
+    border-radius: 8px;
+    margin-top: 10px;
+}
+
+/* Buttons */
+.btn {
+    padding: 8px 12px;
+    border: none;
+    border-radius: 6px;
+    color: white;
+    cursor: pointer;
+    margin-right: 5px;
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+.approve-btn {
+    background: #16a34a;
+}
+
+.approve-btn:hover {
+    background: #15803d;
+}
+
+.reject-btn {
+    background: #dc2626;
+}
+
+.reject-btn:hover {
+    background: #b91c1c;
+}
+</style>
+
+<!-- HEADER -->
+<div class="page-header">
+    <h2>Pending Products</h2>
+
+    <a href="{% url 'admin_dashboard' %}" class="back-btn">
+        ← Back to Dashboard
+    </a>
+</div>
+
+<div class="approve-container">
+
+    <!-- PRODUCTS -->
+    {% for product in products %}
+        <div class="product-card">
+
+            <h3>{{ product.name }}</h3>
+            <p>{{ product.description }}</p>
+            <p><b>Original Price:</b> ₱{{ product.original_price }}</p>
+            <p><b>Discount Price:</b> ₱{{ product.discount_price }}</p>
+
+            {% if product.image %}
+                <img src="{{ product.image.url }}" width="150">
+            {% endif %}
+
+            <form method="post">
+                {% csrf_token %}
+                <input type="hidden" name="product_id" value="{{ product.id }}">
+
+                <button type="submit" name="action" value="approve" class="btn approve-btn">
+                    Approve
+                </button>
+
+                <button type="submit" name="action" value="reject" class="btn reject-btn">
+                    Reject
+                </button>
+            </form>
+
+        </div>
+    {% empty %}
+        <p>No pending products.</p>
+    {% endfor %}
+
+</div>
