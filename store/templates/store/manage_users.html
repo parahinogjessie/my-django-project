@@ -1,0 +1,159 @@
+<style>
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f4f8ff;
+}
+
+/* HEADER */
+.page-header {
+    background: #1e4ed8;
+    color: white;
+    padding: 20px;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.page-header h2 {
+    margin: 0;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+/* Back button */
+.back-btn {
+    padding: 8px 12px;
+    background: white;
+    color: #1e4ed8;
+    text-decoration: none;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: bold;
+    transition: 0.2s;
+}
+
+.back-btn:hover {
+    background: #e0e7ff;
+}
+
+/* Container */
+.approve-container {
+    padding: 30px;
+}
+
+/* Messages */
+.message {
+    padding: 10px;
+    margin-bottom: 15px;
+    border-radius: 8px;
+    font-size: 14px;
+}
+.message.error {
+    background: #fee2e2;
+    color: #b91c1c;
+}
+.message.success {
+    background: #dcfce7;
+    color: #166534;
+}
+
+/* Table */
+.orders-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 8px 20px rgba(0,0,255,0.05);
+}
+
+/* Header */
+.orders-table th {
+    background: #1e4ed8;
+    color: white;
+    padding: 12px;
+    text-align: left;
+    font-size: 14px;
+}
+
+/* Rows */
+.orders-table td {
+    padding: 12px;
+    border-bottom: 1px solid #eee;
+    font-size: 14px;
+    color: #333;
+}
+
+.orders-table tr:hover {
+    background: #eef3ff;
+}
+
+/* Delete button */
+.delete-btn {
+    padding: 6px 10px;
+    background: #dc2626;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.delete-btn:hover {
+    background: #b91c1c;
+}
+
+/* Disabled */
+.delete-btn:disabled {
+    background: #9ca3af;
+    cursor: not-allowed;
+}
+</style>
+
+<!-- HEADER -->
+<div class="page-header">
+    <h2>👥 Manage Users</h2>
+    <a href="{% url 'admin_dashboard' %}" class="back-btn">← Back to dashboard</a>
+</div>
+
+<div class="approve-container">
+
+    <!-- TABLE -->
+    <table class="orders-table">
+        <tr>
+            <th>ID</th>
+            <th>Username</th>
+            <th>Email</th>
+            <th>Staff</th>
+            <th>Superuser</th>
+            <th>Action</th>
+        </tr>
+
+        {% for user in users %}
+        <tr>
+            <td>{{ user.id }}</td>
+            <td>{{ user.username }}</td>
+            <td>{{ user.email }}</td>
+            <td>{{ user.is_staff }}</td>
+            <td>{{ user.is_superuser }}</td>
+            <td>
+                {% if user.is_superuser or user == request.user %}
+                    <button class="delete-btn" disabled>Delete</button>
+                {% else %}
+                    <form method="POST" action="{% url 'delete_user' user.id %}">
+                        {% csrf_token %}
+                        <button type="submit" class="delete-btn"
+                            onclick="return confirm('Are you sure you want to delete this user?')">
+                            Delete
+                        </button>
+                    </form>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+
+</div>

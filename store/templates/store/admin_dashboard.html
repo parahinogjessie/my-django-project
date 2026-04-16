@@ -125,13 +125,48 @@ body {
     text-align: center;
     border-bottom: 1px solid #eee;
 }
+
+/* Delete Button */
+.delete-btn {
+    background: #e74c3c;
+    color: white;
+    border: none;
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.delete-btn:hover {
+    background: #c0392b;
+    transform: translateY(-2px);
+}
+
+/* Message Button */
+.message-btn {
+    display: inline-block;
+    margin-top: 12px;
+    padding: 8px 12px;
+    background: #10b981;
+    color: white;
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.message-btn:hover {
+    background: #059669;
+}
 </style>
 
 <!-- NAVBAR -->
 <div class="admin-navbar">
     <h1>Admin Dashboard</h1>
     <div>
-        <a href="{% url 'admin_dashboard' %}">Home</a>
+        <a href="{% url 'home' %}">Home</a>
         <a href="{% url 'logout' %}">Logout</a>
     </div>
 </div>
@@ -143,6 +178,10 @@ body {
     <div class="welcome-box">
         <h2>Welcome, Admin 👋</h2>
         <p>Manage users, products, orders, and system analytics here.</p>
+
+        <a href="{% url 'contact_messages' %}" class="message-btn">
+            View User Messages
+        </a>
     </div>
 
     <!-- Cards -->
@@ -163,16 +202,84 @@ body {
         <div class="card">
             <h3>Users</h3>
             <p>{{ total_users }} registered users</p>
-            <a href="#">Manage Users</a>
+            <a href="{% url 'manage_users' %}">Manage Users</a>
         </div>
 
         <div class="card">
             <h3>Revenue</h3>
-            <p>₱{{ total_revenue|intcomma}}</p>
-            <a href="#">Reports</a>
+            <p>₱{{ total_revenue|intcomma }}</p>
+            <a href="{% url 'revenue_dashboard' %}">Reports</a>
         </div>
-
     </div>
+
+    <!-- PRODUCTS LIST -->
+    <h2 class="orders-title">📦 All Products</h2>
+
+    <table class="orders-table">
+
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Price</th>
+            <th>Status</th>  <!-- ✅ ADDED -->
+            <th>Actions</th>
+        </tr>
+
+        {% for product in products %}
+        <tr>
+            <td>{{ product.id }}</td>
+            <td>{{ product.name }}</td>
+
+            <!-- PRICE -->
+            <td>
+                <div style="font-weight:bold; color:#1e4ed8;">
+                    ₱{{ product.discount_price|intcomma }}
+                </div>
+
+                {% if product.original_price > product.discount_price %}
+                    <div style="font-size:12px; color:gray;">
+                        <span style="text-decoration: line-through;">
+                            ₱{{ product.original_price|intcomma }}
+                        </span>
+                        <span style="color:red; font-weight:bold; margin-left:5px;">
+                            SALE
+                        </span>
+                    </div>
+                {% endif %}
+            </td>
+
+            <!-- STATUS (NEW) -->
+            <td>
+                {% if product.status == 'approved' %}
+                    <span style="color:green; font-weight:bold;">Approved</span>
+                {% elif product.status == 'pending' %}
+                    <span style="color:orange; font-weight:bold;">Pending</span>
+                {% elif product.status == 'rejected' %}
+                    <span style="color:red; font-weight:bold;">Rejected</span>
+                {% else %}
+                    <span style="color:green; font-weight:bold;">Approved</span>
+                {% endif %}
+            </td>
+
+            <!-- ACTIONS -->
+            <td>
+                <form method="POST">
+                    {% csrf_token %}
+                    <input type="hidden" name="product_id" value="{{ product.id }}">
+
+                    <button type="submit"
+                            name="action"
+                            value="delete"
+                            class="delete-btn"
+                            onclick="return confirm('Delete this product?')">
+                        Delete
+                    </button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+
+    </table>
 
     <!-- Recent Orders -->
     <h2 class="orders-title">Recent Orders</h2>

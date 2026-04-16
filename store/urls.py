@@ -14,6 +14,9 @@ urlpatterns = [
     path('logout/', views.user_logout, name='logout'),
     path("register/", views.register, name="register"),
     path('contact_us/', views.contact_us, name='contact_us'),
+    path('messages/', views.contact_messages, name='contact_messages'),
+    path('messages/delete/<int:message_id>/', views.delete_message, name='delete_message'),
+    path('messages/toggle/<int:message_id>/', views.toggle_message_read, name='toggle_message_read'),
     path('checkout/', views.checkout, name='checkout'),
     path('products/', views.product_list, name='product_list'),
     path('add-product/', views.add_product, name='add_product'),
@@ -24,4 +27,7 @@ urlpatterns = [
     path('admin-dashboard/', views.admin_dashboard, name='admin_dashboard'),
     path('edit-product/<int:product_id>/', views.edit_product, name='edit_product'),
     path('delete-product/<int:product_id>/', views.delete_product, name='delete_product'),
+    path('manage-users/', views.manage_users, name='manage_users'),
+    path('delete-user/<int:user_id>/', views.delete_user, name='delete_user'),
+    path('revenue/', views.revenue_dashboard, name='revenue_dashboard'),
 ]

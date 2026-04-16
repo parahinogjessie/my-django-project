@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Product, Cart, CartItem, Order, Profile
+from .models import Product, Cart, CartItem, Order, Profile, ContactMessage
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm 
 from django.contrib.auth import login, logout, authenticate
@@ -10,14 +10,115 @@ from datetime import timedelta
 from django.contrib import messages
 from django.db import transaction
 from .forms import ProductForm
+from django.http import HttpResponseForbidden
+from django.db.models import Sum, F
+
 
 def is_admin(user):
     return user.is_authenticated and user.is_superuser
 
 @login_required
 @user_passes_test(is_admin)
-def admin_dashboard(request):
+def contact_messages(request):
+    messages_list = ContactMessage.objects.all().order_by('-created_at')
 
+    return render(request, 'store/contact_messages.html', {
+        'messages_list': messages_list
+    })
+
+@login_required
+@user_passes_test(is_admin)
+def delete_message(request, message_id):
+    msg = get_object_or_404(ContactMessage, id=message_id)
+    msg.delete()
+    return redirect('contact_messages')
+
+@login_required
+@user_passes_test(is_admin)
+def toggle_message_read(request, message_id):
+    msg = get_object_or_404(ContactMessage, id=message_id)
+    msg.is_read = not msg.is_read
+    msg.save()
+    return redirect('contact_messages')
+
+@login_required
+@user_passes_test(is_admin)
+def revenue_dashboard(request):
+
+    total_revenue = Order.objects.aggregate(
+        total=Sum('total_price')
+    )['total'] or 0
+
+    total_cost = Order.objects.aggregate(
+        total=Sum(F('quantity') * F('product__cost_price'))
+    )['total'] or 0
+
+    total_profit = total_revenue - total_cost
+
+    total_orders = Order.objects.count()
+
+    top_products = (
+        Order.objects
+        .values('product__name')
+        .annotate(
+            total_sold=Sum('quantity'),
+            revenue=Sum('total_price')
+        )
+        .order_by('-total_sold')[:5]
+    )
+
+    return render(request, 'store/revenue.html', {
+        'total_revenue': total_revenue,
+        'total_cost': total_cost,
+        'total_profit': total_profit,
+        'total_orders': total_orders,
+        'top_products': top_products,
+    })
+
+@login_required
+@user_passes_test(is_admin)
+def delete_user(request, user_id):
+    if request.method == "POST":
+        user_to_delete = get_object_or_404(User, id=user_id)
+
+        if request.user == user_to_delete:
+            messages.error(request, "You cannot delete your own account.")
+            return redirect('manage_users')
+
+
+        if user_to_delete.is_superuser:
+            messages.error(request, "You cannot delete a superuser.")
+            return redirect('manage_users')
+
+        user_to_delete.delete()
+        messages.success(request, "User deleted successfully.")
+
+    return redirect('manage_users')
+
+@login_required
+@user_passes_test(is_admin)
+def manage_users(request):
+    users = User.objects.all().order_by('-id')
+
+    return render(request, 'store/manage_users.html', {
+        'users': users
+    })
+
+@login_required
+@user_passes_test(is_admin)
+def admin_dashboard(request):
+    if request.method == "POST":
+        product_id = request.POST.get("product_id")
+        action = request.POST.get("action")
+
+        product = get_object_or_404(Product, id=product_id)
+
+        if action == "delete":
+            product.delete()
+
+        return redirect("admin_dashboard")
+
+    products = Product.objects.all().order_by('-id')
     total_products = Product.objects.count()
     total_orders = Order.objects.count()
     total_users = User.objects.count()
@@ -26,13 +127,14 @@ def admin_dashboard(request):
     total_revenue = sum(order.total_price for order in Order.objects.all())
 
     context = {
+        'products': products,
         'total_products': total_products,
         'total_orders': total_orders,
         'total_users': total_users,
         'total_revenue': total_revenue,
         'recent_orders': recent_orders,
     }
-
+    
     return render(request, "store/admin_dashboard.html", context)
 
 @login_required
@@ -80,7 +182,7 @@ def add_product(request):
 @user_passes_test(staff_check)
 def staff_dashboard(request):
     # get all products added by this staff user
-    products = Product.objects.filter(added_by=request.user).order_by('-created_at')
+    products = Product.objects.filter(added_by=request.user).exclude(status='rejected').order_by('-created_at')
     return render(request, 'store/staff_dashboard.html', {'products': products})
 
 @login_required
@@ -132,12 +234,16 @@ def approve_products(request):
         # APPROVE
         if action == "approve":
             product.status = "approved"
+            product.save()
 
         # REJECT
         elif action == "reject":
             product.status = "rejected"
+            product.save()
 
-        product.save()
+        elif action == "delete":
+            product.delete()
+
         return redirect('approve_products')
 
     return render(request, 'store/approve_products.html', {
@@ -382,48 +488,55 @@ def user_login(request):
 def register(request):
     ip = get_ip(request)
     cache_key = f"register_{ip}"
-    data = cache.get(cache_key, {"count":0, "date": timezone.now().date()})
+    data = cache.get(cache_key, {"count": 0, "date": timezone.now().date()})
 
     # Reset count if day changed
     if data["date"] != timezone.now().date():
-        data = {"count":0, "date": timezone.now().date()}
+        data = {"count": 0, "date": timezone.now().date()}
 
     # Block if over limit
     if data["count"] >= MAX_REG_PER_DAY:
-        return render(request,"store/register.html",{"cooldown":1})  # disables form
+        return render(request, "store/register.html", {
+            "cooldown": 1,
+            "error": None
+        })
+
+    error = None
 
     if request.method == "POST":
-        username = request.POST.get("username")
-        password = request.POST.get("password")
-        confirm = request.POST.get("confirm_password")
+        username = request.POST.get("username", "").strip()
+        password = request.POST.get("password", "")
+        confirm = request.POST.get("confirm_password", "")
 
         # Validation
         if len(username) < 15:
-            return render(request,"store/register.html")
-        if len(password) < 8 or not any(c.isupper() for c in password) or not any(c.isdigit() for c in password):
-            return render(request,"store/register.html")
-        if password != confirm:
-            return render(request,"store/register.html")
-        if User.objects.filter(username=username).exists():
-            return render(request,"store/register.html")
+            error = "Username must be at least 15 characters."
+        elif len(password) < 8 or not any(c.isupper() for c in password) or not any(c.isdigit() for c in password):
+            error = "Password must be 8+ chars, 1 uppercase, 1 number."
+        elif password != confirm:
+            error = "Passwords do not match."
+        elif User.objects.filter(username=username).exists():
+            error = "Username already exists."
+        else:
+            # Create user
+            user = User.objects.create_user(username=username, password=password)
+            login(request, user)
 
-        # Create user and login
-        user = User.objects.create_user(username=username,password=password)
-        login(request,user)
+            # Increment count per IP
+            data["count"] += 1
+            cache.set(cache_key, data, timeout=86400)
 
-        # Increment count per IP
-        data["count"] += 1
-        cache.set(cache_key,data,timeout=86400)  # 1 day
+            return redirect("home")
 
-        return redirect("home")  # redirect after success
-
-    return render(request,"store/register.html",{"cooldown":0})
+    return render(request, "store/register.html", {
+        "cooldown": 0,
+        "error": error
+    })
 
 def user_logout(request):
     logout(request)
     return redirect('home')
 
-from .models import Profile, ContactMessage
 
 @login_required(login_url='login')
 def contact_us(request):

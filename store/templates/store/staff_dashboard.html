@@ -1,119 +1,97 @@
+{% if products %}
+
 <h2 style="margin-bottom: 10px; color: #1f3c88;">Staff Dashboard</h2>
 
 <p style="margin-bottom: 10px; color: #555;">
     Welcome, <strong style="color:#1f3c88;">{{ request.user.username }}</strong>! Here are your products:
 </p>
 
-<!-- RIGHT-ALIGNED BUTTON UNDER WELCOME -->
+<!-- BUTTON ROW (ALWAYS SHOWN) -->
 <div class="button-row">
     <a href="{% url 'add_product' %}" class="add-product-btn">
         + Add Product
     </a>
+
+    <a href="{% url 'logout' %}" class="logout-btn">Logout</a>
 </div>
 
-{% if products %}
-
 <style>
-    body {
-        background: #f4f8ff;
-    }
+body {
+    background: #f4f8ff;
+}
 
-    /* BUTTON ALIGNMENT */
-    .button-row {
-        display: flex;
-        justify-content: flex-end;
-        margin-bottom: 15px;
-    }
+/* BUTTONS */
+.button-row {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 15px;
+}
 
-    .add-product-btn {
-        display: inline-block;
-        padding: 10px 16px;
-        background: linear-gradient(90deg, #1f3c88, #2f6fd6);
-        color: white;
-        text-decoration: none;
-        font-size: 14px;
-        font-weight: 600;
-        border-radius: 8px;
-        box-shadow: 0 3px 10px rgba(31, 60, 136, 0.2);
-        transition: 0.2s ease;
-    }
+.add-product-btn {
+    display: inline-block;
+    padding: 10px 16px;
+    background: linear-gradient(90deg, #1f3c88, #2f6fd6);
+    color: white;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+    border-radius: 8px;
+    box-shadow: 0 3px 10px rgba(31, 60, 136, 0.2);
+    transition: 0.2s ease;
+}
 
-    .add-product-btn:hover {
-        transform: translateY(-2px);
-        background: linear-gradient(90deg, #16306f, #245ac2);
-    }
+.add-product-btn:hover {
+    transform: translateY(-2px);
+}
 
-    .dashboard-table {
-        width: 100%;
-        border-collapse: collapse;
-        background: #ffffff;
-        border-radius: 10px;
-        overflow: hidden;
-        box-shadow: 0 4px 12px rgba(31, 60, 136, 0.08);
-        border: 1px solid #e6efff;
-    }
+.logout-btn {
+    display: inline-block;
+    padding: 10px 16px;
+    margin-left: 10px;
+    background: linear-gradient(90deg, #c0392b, #e74c3c);
+    color: white;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+    border-radius: 8px;
+}
 
-    .dashboard-table thead th {
-        background: linear-gradient(90deg, #1f3c88, #2f6fd6);
-        color: white;
-        text-align: left;
-        padding: 14px;
-        font-size: 14px;
-        letter-spacing: 0.3px;
-    }
+/* TABLE */
+.dashboard-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #ffffff;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(31, 60, 136, 0.08);
+}
 
-    .dashboard-table td {
-        padding: 14px;
-        border-top: 1px solid #eef3ff;
-        font-size: 14px;
-        color: #333;
-    }
+.dashboard-table thead th {
+    background: linear-gradient(90deg, #1f3c88, #2f6fd6);
+    color: white;
+    padding: 14px;
+}
 
-    .dashboard-table tbody tr:hover {
-        background: #e8f1ff;
-        transition: 0.2s ease;
-    }
+.dashboard-table td {
+    padding: 14px;
+    border-top: 1px solid #eef3ff;
+}
 
-    .status-approved {
-        color: #1f8f4a;
-        font-weight: 600;
-        background: #e9f9ef;
-        padding: 4px 10px;
-        border-radius: 20px;
-        font-size: 12px;
-    }
+.status-approved {
+    color: #1f8f4a;
+    background: #e9f9ef;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+}
 
-    .status-pending {
-        color: #b9770e;
-        font-weight: 600;
-        background: #fff4e5;
-        padding: 4px 10px;
-        border-radius: 20px;
-        font-size: 12px;
-    }
-
-    .action-links a {
-        text-decoration: none;
-        margin-right: 10px;
-        font-size: 13px;
-        color: #1f3c88;
-        font-weight: 500;
-    }
-
-    .action-links a:hover {
-        color: #2f6fd6;
-        text-decoration: underline;
-    }
-
-    .empty-state {
-        padding: 25px;
-        background: #ffffff;
-        border: 1px dashed #bcd3ff;
-        border-radius: 10px;
-        color: #666;
-        text-align: center;
-        box-shadow: 0 3px 10px rgba(31, 60, 136, 0.05);
-    }
+.status-pending {
+    color: #b9770e;
+    background: #fff4e5;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+}
 </style>
 
 <table class="dashboard-table">
@@ -135,15 +113,19 @@
             <td>₱{{ product.original_price }}</td>
             <td>₱{{ product.discount_price }}</td>
             <td>
-                {% if product.is_approved %}
+                {% if product.status == "approved" %}
                     <span class="status-approved">Approved</span>
+                {% elif product.status == "Rejected" %}
+                    <span style="color:#c0392b; font-weight:600; background:#fdecea; padding:4px 10px; border-radius:20px; font-size:12px;">
+                        Rejected
+                    </span>
                 {% else %}
                     <span class="status-pending">Pending</span>
                 {% endif %}
             </td>
             <td>{{ product.created_at|date:"M d, Y H:i" }}</td>
-            <td class="action-links">
-                {% if not product.is_approved %}
+            <td>
+                {% if product.status != "approved" %}
                     <a href="{% url 'edit_product' product.id %}">Edit</a>
                     <a href="{% url 'delete_product' product.id %}">Delete</a>
                 {% else %}
@@ -157,8 +139,54 @@
 
 {% else %}
 
+<style>
+.empty-state {
+    margin-top: 40px;
+    padding: 40px;
+    background: white;
+    border: 1px dashed #bcd3ff;
+    border-radius: 10px;
+    text-align: center;
+    color: #555;
+    box-shadow: 0 4px 12px rgba(31, 60, 136, 0.05);
+}
+
+.empty-state a {
+    margin-top: 15px;
+    display: inline-block;
+    padding: 10px 16px;
+    background: #1e4ed8;
+    color: white;
+    border-radius: 8px;
+    text-decoration: none;
+}
+</style>
+
+<h2 style="margin-bottom: 10px; color: #1f3c88;">Staff Dashboard</h2>
+
+<p style="margin-bottom: 10px; color: #555;">
+    Welcome, <strong style="color:#1f3c88;">{{ request.user.username }}</strong>!
+</p>
+
 <div class="empty-state">
-    No products yet. Start by adding your first product.
+    <p>No products yet.</p>
+
+    <a href="{% url 'add_product' %}">+ Add Your First Product</a>
+
+    <!-- ✅ LOGOUT ADDED HERE TOO -->
+    <br><br>
+    <a href="{% url 'logout' %}" style="
+        display:inline-block;
+        margin-top:10px;
+        padding:10px 16px;
+        background: linear-gradient(90deg, #c0392b, #e74c3c);
+        color:white;
+        border-radius:8px;
+        text-decoration:none;
+        font-weight:600;
+    ">
+        Logout
+    </a>
 </div>
 
 {% endif %}

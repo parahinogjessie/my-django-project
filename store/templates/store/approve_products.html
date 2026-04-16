@@ -1,3 +1,4 @@
+{% load humanize %}
 <style>
 body {
     margin: 0;
@@ -95,11 +96,18 @@ body {
 .reject-btn:hover {
     background: #b91c1c;
 }
+.delete-btn {
+    background: #6b7280;
+}
+
+.delete-btn:hover {
+    background: #374151;
+}
 </style>
 
 <!-- HEADER -->
 <div class="page-header">
-    <h2>Pending Products</h2>
+    <h2>📦 Pending Products</h2>
 
     <a href="{% url 'admin_dashboard' %}" class="back-btn">
         ← Back to Dashboard
@@ -114,8 +122,8 @@ body {
 
             <h3>{{ product.name }}</h3>
             <p>{{ product.description }}</p>
-            <p><b>Original Price:</b> ₱{{ product.original_price }}</p>
-            <p><b>Discount Price:</b> ₱{{ product.discount_price }}</p>
+            <p><b>Original Price:</b> ₱{{ product.original_price|intcomma }}</p>
+            <p><b>Discount Price:</b> ₱{{ product.discount_price|intcomma }}</p>
 
             {% if product.image %}
                 <img src="{{ product.image.url }}" width="150">
@@ -131,6 +139,11 @@ body {
 
                 <button type="submit" name="action" value="reject" class="btn reject-btn">
                     Reject
+                </button>
+
+                <button type="submit" name="action" value="delete" class="btn delete-btn"
+                    onclick="return confirm('Delete this product permanently?')">
+                    Delete
                 </button>
             </form>
 

@@ -1,11 +1,12 @@
 <!DOCTYPE html>
 <html>
 <head>
-        {% load static %}
+    {% load static %}
     <title>{% block title %}SmartSave{% endblock %}</title>
     <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
 </head>
 <body>
+
     <nav class="navbar">
         <ul class="nav-links">
             <li><a href="{% url 'home' %}">Home</a></li>
@@ -26,21 +27,8 @@
             {% endif %}
         </ul>
     </nav>
-
-    {% if messages %}
-        <ul id="message">
-            {% for message in messages %}
-                <li style="color:red;">{{ message }}</li>
-            {% endfor %}
-        </ul>
-
-        <script>
-            setTimeout(function() {
-                var msg = document.getElementById('message');
-                if(msg){ msg.style.display = 'none'; }
-            }, 3000);
-        </script>
-    {% endif %}
+    
     {% block content %}{% endblock %}
+
 </body>
 </html>

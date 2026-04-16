@@ -4,13 +4,181 @@
 {% block title %}My Shopping Cart{% endblock %}
 
 {% block content %}
+
+<style>
+/* ===== BASE ===== */
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f5f8ff;
+    color: #1e2a44;
+}
+
+/* ===== WRAPPER ===== */
+.main-content {
+    padding: 30px;
+    display: flex;
+    justify-content: center;
+}
+
+/* ===== CART CARD ===== */
+.cart-card {
+    width: 100%;
+    max-width: 1050px;
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 25px;
+    box-shadow: 0 8px 25px rgba(30, 78, 216, 0.12);
+    border: 1px solid #e8efff;
+}
+
+/* TITLE */
+.cart-card h1 {
+    text-align: center;
+    color: #1e4ed8;
+    font-size: 28px;
+    margin-bottom: 25px;
+    font-weight: bold;
+}
+
+/* ===== TABLE ===== */
+.cart-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 10px;
+}
+
+/* HEADER */
+.cart-table thead tr {
+    background: #1e4ed8;
+    color: white;
+}
+
+.cart-table th {
+    background: #1e4ed8;
+    color: white;
+    padding: 14px;
+    font-size: 13px;
+    text-transform: uppercase;
+}
+
+/* ROW STYLE */
+.cart-table tbody tr {
+    background: #ffffff;
+    box-shadow: 0 3px 10px rgba(30, 78, 216, 0.08);
+    border-radius: 12px;
+    transition: 0.2s ease;
+}
+
+.cart-table tbody tr:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 18px rgba(30, 78, 216, 0.15);
+    background: #f0f6ff;
+}
+
+/* CELLS */
+.cart-table td {
+    padding: 14px;
+    text-align: center;
+    border: none;
+}
+
+/* IMAGE */
+.product-image {
+    width: 70px;
+    height: 70px;
+    object-fit: cover;
+    border-radius: 10px;
+    border: 2px solid #dbe7ff;
+}
+
+/* CHECKBOX */
+.cart-table input[type="checkbox"] {
+    transform: scale(1.2);
+    cursor: pointer;
+}
+
+/* REMOVE BUTTON */
+.btn-remove {
+    background: #ff4d4d;
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 13px;
+    transition: 0.2s ease;
+}
+
+.btn-remove:hover {
+    background: #d93636;
+    transform: scale(1.05);
+}
+
+/* CHECKOUT BUTTON */
+.btn-checkout {
+    margin-top: 25px;
+    background: linear-gradient(135deg, #1e4ed8, #3b82f6);
+    color: white;
+    border: none;
+    padding: 14px 30px;
+    border-radius: 10px;
+    font-size: 15px;
+    cursor: pointer;
+    font-weight: bold;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    box-shadow: 0 8px 20px rgba(30, 78, 216, 0.25);
+    transition: 0.2s ease;
+}
+
+.btn-checkout:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 25px rgba(30, 78, 216, 0.35);
+}
+
+/* EMPTY TEXT */
+.cart-card p {
+    text-align: center;
+    color: #666;
+    font-size: 16px;
+    padding: 20px;
+}
+
+/* ===== MOBILE ===== */
+@media (max-width: 768px) {
+    .cart-card {
+        padding: 15px;
+    }
+
+    .cart-table th,
+    .cart-table td {
+        font-size: 12px;
+        padding: 10px;
+    }
+
+    .product-image {
+        width: 55px;
+        height: 55px;
+    }
+
+    .btn-checkout {
+        width: 100%;
+    }
+}
+</style>
+
 <div class="main-content">
     <div class="container cart-card">
+
         <h1>Your Shopping Cart</h1>
 
         {% if cart_items %}
+
         <form action="{% url 'checkout' %}" method="POST">
             {% csrf_token %}
+
             <table class="cart-table">
                 <thead>
                     <tr>
@@ -23,42 +191,54 @@
                         <th>Action</th>
                     </tr>
                 </thead>
+
                 <tbody>
                     {% for item in cart_items %}
                     <tr>
-                        <td style="text-align:center;">
+
+                        <td>
                             <input type="checkbox" name="cart_item_ids" value="{{ item.id }}">
                         </td>
+
                         <td>{{ item.product.name }}</td>
+
                         <td>
                             {% if item.product.image %}
-                            <img src="{{ item.product.image.url }}" class="product-image" width="80" height="80">
+                            <img src="{{ item.product.image.url }}" class="product-image">
                             {% else %}
                             No Image
                             {% endif %}
                         </td>
+
                         <td>₱{{ item.product.discount_price|intcomma }}</td>
+
                         <td>{{ item.quantity }}</td>
+
                         <td>₱{{ item.subtotal|intcomma }}</td>
+
                         <td>
-                            <a href="{% url 'remove_from_cart' item.product.id %}" onclick="return confirm('Remove {{ item.product.name }} from cart?');">
+                            <a href="{% url 'remove_from_cart' item.product.id %}"
+                               onclick="return confirm('Remove {{ item.product.name }} from cart?');">
                                 <button type="button" class="btn-remove">Remove</button>
                             </a>
                         </td>
+
                     </tr>
                     {% endfor %}
                 </tbody>
             </table>
 
-            <div style="text-align:center; margin-top:20px;">
-                <button type="submit" class="btn-checkout">
-                    Checkout Selected Items
-                </button>
-            </div>
+            <button type="submit" class="btn-checkout">
+                Checkout Selected Items
+            </button>
+
         </form>
+
         {% else %}
         <p>Your cart is empty.</p>
         {% endif %}
+
     </div>
 </div>
+
 {% endblock %}

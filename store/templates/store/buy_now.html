@@ -4,49 +4,181 @@
 {% block title %}Buy Now{% endblock %}
 
 {% block content %}
-<div style="max-width:600px; margin:40px auto; padding:25px; background:#fff; border-radius:20px; box-shadow:0 6px 20px rgba(0,0,0,0.1); font-family:Arial;">
-    
-    <h2 style="text-align:center; margin-bottom:20px;">Buy Now</h2>
+<style>
+/* ===== BASE ===== */
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f5f8ff;
+    color: #1e2a44;
+}
 
-    <div style="display:flex; gap:20px; align-items:center; margin-bottom:20px;">
+/* ===== CENTER WRAPPER ===== */
+.buy-container {
+    max-width: 600px;
+    margin: 40px auto;
+    padding: 25px;
+    background: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 8px 25px rgba(30, 78, 216, 0.12);
+    border: 1px solid #e8efff;
+}
+
+/* TITLE */
+.buy-container h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #1e4ed8;
+    font-size: 26px;
+    font-weight: bold;
+}
+
+/* ===== PRODUCT BOX ===== */
+.buy-product {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    margin-bottom: 20px;
+    padding: 15px;
+    border-radius: 12px;
+    background: #f9fbff;
+    border: 1px solid #e6efff;
+}
+
+.buy-product img {
+    width: 140px;
+    border-radius: 10px;
+    border: 2px solid #dbe7ff;
+}
+
+.buy-product-name {
+    font-weight: 600;
+    margin: 0;
+}
+
+.buy-old-price {
+    margin: 0;
+    text-decoration: line-through;
+    color: #888;
+}
+
+.buy-new-price {
+    margin: 0;
+    color: #1e4ed8;
+    font-weight: 700;
+}
+
+/* ===== FORM ===== */
+.buy-form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+/* INPUTS */
+.buy-input,
+.buy-textarea {
+    width: 100%;
+    padding: 10px;
+    border-radius: 10px;
+    border: 1px solid #cddcff;
+    outline: none;
+    transition: 0.2s;
+    background: #fff;
+}
+
+.buy-input:focus,
+.buy-textarea:focus {
+    border-color: #1e4ed8;
+    box-shadow: 0 0 0 3px rgba(30, 78, 216, 0.15);
+}
+
+/* LABELS */
+.buy-label {
+    font-size: 14px;
+    font-weight: 600;
+    color: #1e2a44;
+}
+
+/* BUTTON */
+.buy-btn {
+    margin-top: 10px;
+    background: #1e4ed8;
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 10px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.buy-btn:hover {
+    background: #153aa6;
+    transform: translateY(-2px);
+}
+
+/* ===== MOBILE ===== */
+@media (max-width: 768px) {
+    .buy-container {
+        margin: 20px;
+        padding: 15px;
+    }
+
+    .buy-product {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .buy-product img {
+        width: 120px;
+    }
+}
+</style>
+
+<div class="buy-container">
+
+    <h2>Buy Now</h2>
+
+    <div class="buy-product">
         {% if product.image %}
-            <img src="{{ product.image.url }}" alt="{{ product.name }}" width="150" style="border-radius:10px;">
+            <img src="{{ product.image.url }}" alt="{{ product.name }}">
         {% endif %}
+
         <div>
-            <p style="margin:0; font-weight:600;">{{ product.name }}</p>
+            <p class="buy-product-name">{{ product.name }}</p>
+
             {% if product.discount_price < product.original_price %}
-                <p style="margin:0; text-decoration:line-through; color:#888;">₱{{ product.original_price|intcomma }}</p>
-                <p style="margin:0; color:#FE2C55; font-weight:700;">₱{{ product.discount_price|intcomma }}</p>
+                <p class="buy-old-price">₱{{ product.original_price|intcomma }}</p>
+                <p class="buy-new-price">₱{{ product.discount_price|intcomma }}</p>
             {% else %}
-                <p style="margin:0; font-weight:700;">₱{{ product.original_price|intcomma }}</p>
+                <p class="buy-new-price">₱{{ product.original_price|intcomma }}</p>
             {% endif %}
         </div>
     </div>
 
-    <form method="POST">
+    <form method="POST" class="buy-form">
         {% csrf_token %}
-        
-        <div style="margin-bottom:15px;">
-            <label>Quantity:</label>
-            <input type="number" name="quantity" value="1" min="1" style="width:60px;">
-        </div>
 
-        <div style="margin-bottom:15px;">
-            <label>Full Name:</label>
-            <input type="text" name="full_name" value="{{ profile.full_name|default:'' }}" required style="width:100%;">
-        </div>
+        <label class="buy-label">Quantity:</label>
+        <input class="buy-input" type="number" name="quantity" value="1" min="1">
 
-        <div style="margin-bottom:15px;">
-            <label>Mobile:</label>
-            <input type="text" name="mobile" value="{{ profile.mobile|default:'' }}" required style="width:100%;">
-        </div>
+        <label class="buy-label">Full Name:</label>
+        <input class="buy-input" type="text" name="full_name"
+               value="{{ profile.full_name|default:'' }}" required>
 
-        <div style="margin-bottom:15px;">
-            <label>Address:</label>
-            <textarea name="address" required style="width:100%;">{{ profile.address|default:'' }}</textarea>
-        </div>
+        <label class="buy-label">Mobile:</label>
+        <input class="buy-input" type="text" name="mobile"
+               value="{{ profile.mobile|default:'' }}" required>
 
-        <button type="submit" name="place_order" style="background:#FE2C55; color:#fff; padding:10px 20px; border:none; border-radius:8px;">Place Order</button>
+        <label class="buy-label">Address:</label>
+        <textarea class="buy-textarea" name="address" required>{{ profile.address|default:'' }}</textarea>
+
+        <button type="submit" name="place_order" class="buy-btn"
+        onclick="this.disabled=true; this.form.submit();">
+        Place Order
+        </button>
     </form>
+
 </div>
 {% endblock %}
